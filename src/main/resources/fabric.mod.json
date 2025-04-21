@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "coin_and_conquest_elixir_of_trades",
+  "version": "${version}",
+  "name": "Coin and Conquest Elixir of Trades",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/coin_and_conquest_elixir_of_trades/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "com.mrbashyal.coin_and_conquest_elixir_of_trades.client.Coin_and_conquest_elixir_of_tradesDataGenerator"
+    ],
+    "client": [
+      "com.mrbashyal.coin_and_conquest_elixir_of_trades.client.Coin_and_conquest_elixir_of_tradesClient"
+    ],
+    "main": [
+      "com.mrbashyal.coin_and_conquest_elixir_of_trades.Coin_and_conquest_elixir_of_trades"
+    ]
+  },
+  "mixins": [
+    "coin_and_conquest_elixir_of_trades.mixins.json",
+    {
+      "config": "coin_and_conquest_elixir_of_trades.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
