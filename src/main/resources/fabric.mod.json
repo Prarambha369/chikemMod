@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "chickenmod",
+  "version": "${version}",
+  "name": "ChickenMod",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/chickenmod/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": [
+      "mr.bashyal.chickenmod.client.ChickenmodDataGenerator"
+    ],
+    "client": [
+      "mr.bashyal.chickenmod.client.ChickenmodClient"
+    ],
+    "main": [
+      "mr.bashyal.chickenmod.Chickenmod"
+    ]
+  },
+  "mixins": [
+    "chickenmod.mixins.json",
+    {
+      "config": "chickenmod.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
