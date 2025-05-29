@@ -2,7 +2,6 @@ package mr.bashyal.chickenmod.registry;
 
 import mr.bashyal.chickenmod.entity.MountableChickenEntity;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
@@ -13,9 +12,9 @@ public class ModEntities {
     public static final EntityType<MountableChickenEntity> MOUNTABLE_CHICKEN =
             Registry.register(
                     Registries.ENTITY_TYPE,
-                    Identifier.of("chickenmod", "mountable_chicken"),
+                    new Identifier("chickenmod", "mountable_chicken"),
                     FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, MountableChickenEntity::new)
-                            .dimensions(EntityDimensions.fixed(0.6F, 0.8F))
+                            .dimensions(0.6F, 0.8F)
                             .build()
             );
 
@@ -23,3 +22,4 @@ public class ModEntities {
         // Called from Chickenmod.onInitialize
     }
 }
+

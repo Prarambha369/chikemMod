@@ -3,7 +3,10 @@ package mr.bashyal.chickenmod.item;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ActionResult;
 import mr.bashyal.chickenmod.registry.ModEffects;
 
@@ -13,16 +16,19 @@ public class ChickenSuperFeedItem extends Item {
     }
 
     @Override
-    public ActionResult useOnEntity(ItemUsageContext context) {
-        if (!context.getWorld().isClient && context.getEntity() instanceof ChickenEntity chicken) {
-            chicken.addStatusEffect(new StatusEffectInstance(
-                ModEffects.EGG_LAYING_BOOST,
-                20 * 60 * 5, // 5 minutes
-                0
-            ));
-            context.getStack().decrement(1);
-            return ActionResult.SUCCESS;
+    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
+        if (!user.getWorld().isClient && entity instanceof net.minecraft.entity.passive.ChickenEntity chicken) {
+            var eggLayingBoostEntry = net.minecraft.registry.Registries.STATUS_EFFECT.getEntry(ModEffects.EGG_LAYING_BOOST);
+            if (eggLayingBoostEntry != null) {
+                chicken.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(
+                    eggLayingBoostEntry,
+                    20 * 60 * 5,
+                    0
+                ));
+                stack.decrement(1);
+                return ActionResult.SUCCESS;
+            }
         }
-        return super.useOnEntity(context);
+        return super.useOnEntity(stack, user, entity, hand);
     }
 }
