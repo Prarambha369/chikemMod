@@ -11,6 +11,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 
 public class MountableChickenEntity extends ChickenEntity {
     private boolean isGliding = false;
@@ -27,7 +29,7 @@ public class MountableChickenEntity extends ChickenEntity {
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D);
     }
 
-    @Override
+    // This method doesn't override anything in the parent class
     public boolean canBeRidden() {
         return true;
     }
@@ -41,12 +43,20 @@ public class MountableChickenEntity extends ChickenEntity {
                     this.isGliding = true;
                     rider.fallDistance = 0;
                     rider.setVelocity(rider.getVelocity().multiply(1, 0.6, 1));
-                    world.playSound(null, new BlockPos(this.getPos()), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.0F, 1.0F);
+                    this.getWorld().playSound(null, new BlockPos((int)this.getPos().x, (int)this.getPos().y, (int)this.getPos().z), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.0F, 1.0F);
                 } else {
                     this.isGliding = false;
                 }
             }
         }
     }
-}
 
+    @Override
+    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if (!this.world.isClient) {
+            player.startRiding(this);
+            return ActionResult.SUCCESS;
+        }
+        return super.interactMob(player, hand);
+    }
+}

@@ -4,6 +4,9 @@
   "package": "mr.bashyal.chickenmod.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "NarratorManagerMixin",
+    "ShaderProgramMixin",
+    "JvmFlagsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
