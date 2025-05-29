@@ -27,7 +27,6 @@ public class MountableChickenEntity extends ChickenEntity {
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D);
     }
 
-    @Override
     public boolean canBeRidden() {
         return true;
     }
@@ -41,7 +40,7 @@ public class MountableChickenEntity extends ChickenEntity {
                     this.isGliding = true;
                     rider.fallDistance = 0;
                     rider.setVelocity(rider.getVelocity().multiply(1, 0.6, 1));
-                    world.playSound(null, new BlockPos(this.getPos()), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.0F, 1.0F);
+                    this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.0F, 1.0F);
                 } else {
                     this.isGliding = false;
                 }

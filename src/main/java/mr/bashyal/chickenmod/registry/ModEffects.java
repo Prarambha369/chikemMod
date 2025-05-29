@@ -10,7 +10,7 @@ import net.minecraft.registry.Registry;
 public class ModEffects {
     public static final StatusEffect EGG_LAYING_BOOST = Registry.register(
         Registries.STATUS_EFFECT,
-        new Identifier("chickenmod", "egg_laying_boost"),
+        Identifier.of("chickenmod", "egg_laying_boost"),
         new EggLayingBoostEffect(StatusEffectCategory.BENEFICIAL, 0xffd700)
     );
 
