@@ -14,9 +14,8 @@ public class ChickenmodClient implements ClientModInitializer {
         // Register mountable chicken renderer
         EntityRendererRegistry.register(ModEntities.MOUNTABLE_CHICKEN,
             context -> new ChickenEntityRenderer(context) {
-                @Override
                 public Identifier getTextureLocation(MountableChickenEntity entity) {
-                    return new Identifier("chickenmod", "textures/entity/mountable_chicken.png");
+                    return Identifier.of("chickenmod", "textures/entity/mountable_chicken.png");
                 }
             }
         );
