@@ -1,16 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" factoryName="Application" name="Data Generation" type="Application">
-    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main"/>
-    <module name="Coin_and_Conquest_Elixir_of_Trades.client"/>
-    <option name="PROGRAM_PARAMETERS" value=""/>
-    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=/home/mrbashyal/IdeaProjects/Coin@@0020and@@0020Conquest@@0020Elixir@@0020of@@0020Trades/.gradle/loom-cache/launch.cfg -Dfabric.dli.env=client -Dfabric-api.datagen &quot;-Dfabric-api.datagen.output-dir=/home/mrbashyal/IdeaProjects/Coin and Conquest Elixir of Trades/src/main/generated&quot; -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient"/>
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/build/datagen/"/>
+  <configuration default="false" name="Data Generation" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="21 (2)" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main" />
+    <module name="ChickenMod.test" />
+    <shortenClasspath name="ARGS_FILE" />
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=$PROJECT_DIR$/../Coin@@0020and@@0020Conquest@@0020Elixir@@0020of@@0020Trades/.gradle/loom-cache/launch.cfg -Dfabric.dli.env=client -Dfabric-api.datagen &quot;-Dfabric-api.datagen.output-dir=$PROJECT_DIR$/../Coin and Conquest Elixir of Trades/src/main/generated&quot; -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/build/datagen/" />
     <method v="2">
-      <option enabled="true" name="Make"/>
+      <option name="Make" enabled="true" />
     </method>
-    <envs>
-      
-    </envs>
-    <shortenClasspath name="ARGS_FILE"/>
-  <classpathModifications/></configuration>
+  </configuration>
 </component>
