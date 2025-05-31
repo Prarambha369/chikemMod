@@ -1,11 +1,13 @@
 {
   "schemaVersion": 1,
   "id": "chickenmod",
-  "version": "${version}",
+  "version": "1.21",
   "name": "ChickenMod",
-  "description": "",
-  "authors": [],
-  "contact": {},
+  "description": "chickem mod yummy",
+  "authors": ["MrBashyal"],
+  "contact": {
+    "email": "prarambhabashyal@gmail.com"
+  },
   "license": "MIT",
   "icon": "assets/chickenmod/icon.png",
   "environment": "client",
@@ -28,8 +30,8 @@
     }
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=0.14.0",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "1.21"
   }
 }
