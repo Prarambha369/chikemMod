@@ -23,11 +23,18 @@ public class ModItems {
         new GoldenEggItem(new Item.Settings())
     );
 
+    public static final Item GOLCHICK_FOOD = Registry.register(
+        Registries.ITEM,
+        Identifier.of("chickenmod", "golchick_food"),
+        new Item(new Item.Settings().maxCount(16))
+    );
+
     public static void register() {
         // items registered via static initializers
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(entries -> {
             entries.add(SUPER_FEED);
             entries.add(GOLDEN_EGG);
+            entries.add(GOLCHICK_FOOD);
         });
     }
 }

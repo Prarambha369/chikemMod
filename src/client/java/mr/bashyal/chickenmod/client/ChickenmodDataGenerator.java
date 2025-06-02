@@ -8,5 +8,8 @@ public class ChickenmodDataGenerator implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
+        // Example: Register a simple data provider (replace with your own as needed)
+        // pack.addProvider(MyBlockLootTableProvider::new);
     }
 }
+
