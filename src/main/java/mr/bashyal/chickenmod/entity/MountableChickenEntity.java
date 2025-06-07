@@ -245,7 +245,10 @@ public class MountableChickenEntity extends ChickenEntity {
 
              // Handle jump input (movementInput.y > 0 indicates jump button)
              if (movementInput.y > 0.0D && this.isOnGround()) {
-                 this.jump();
+                 // Jump one block high
+                 double jumpStrength = Math.sqrt(0.16D * 1.0D);
+                 this.setVelocity(this.getVelocity().x, jumpStrength, this.getVelocity().z);
+                 this.velocityDirty = true;
              }
 
              // Delegate movement
