@@ -1,8 +1,9 @@
-# ChickenMod
 
-![License](https://img.shields.io/badge/license-MIT-blue)  
-![Hackatime Badge](https://hackatime-badge.hackclub.com/U0894AG5K1C/ChickenMod)
+ ![CHICKEMMOD.png](src/main/resources/assets/CHICKEMMOD.png)
+![License](https://img.shields.io/badge/license-MIT-blue)   ![Hackatime Badge](https://hackatime-badge.hackclub.com/U0894AG5K1C/ChickenMod)
+> Chikem Mod Yummy !!
 
+## ChickenMod
 ChickenMod is a modification designed to enhance gameplay by introducing unique features and abilities related to chickens. From rare chicken breeds with special powers to customizable chicken behaviors, this mod adds an exciting layer of complexity and fun to the game.
 
 ## Features

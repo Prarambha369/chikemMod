@@ -1,5 +1,4 @@
 package mr.bashyal.chickenmod.entity;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.WanderAroundGoal;
@@ -196,7 +195,7 @@ public class MountableChickenEntity extends ChickenEntity {
             try {
                 InputStream stream = MountableChickenEntity.class.getClassLoader().getResourceAsStream("rare_chicken_names.json");
                 if (stream == null) {
-                    System.err.println("[ChickenMod] Failed to load resource: rare_chicken_names.json");
+                    System.err.println("[ChickenMod] Warning: rare_chicken_names.json not found. No rare chicken names will be loaded.");
                     rareChickenNames = new ArrayList<>();
                     return rareChickenNames;
                 }
@@ -212,7 +211,8 @@ public class MountableChickenEntity extends ChickenEntity {
                 return rareChickenNames;
             } catch (Exception e) {
                 System.err.println("[ChickenMod] Error loading rare_chicken_names.json: " + e.getMessage());
-                e.printStackTrace();
+                // Optionally print stack trace in debug mode only
+                // e.printStackTrace();
                 rareChickenNames = new ArrayList<>();
                 return rareChickenNames;
             }
@@ -237,24 +237,28 @@ public class MountableChickenEntity extends ChickenEntity {
             try {
                 InputStream stream = MountableChickenEntity.class.getClassLoader().getResourceAsStream("rare_chicken_abilities.json");
                 if (stream == null) {
-                    System.err.println("[ChickenMod] Failed to load resource: rare_chicken_abilities.json");
+                    System.err.println("[ChickenMod] Warning: rare_chicken_abilities.json not found. No rare chicken abilities will be loaded.");
                     rareChickenAbilities = new java.util.HashMap<>();
                     return rareChickenAbilities;
                 }
                 String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
                 Gson gson = new Gson();
-                java.util.Map<String, String> map = gson.fromJson(json, java.util.Map.class);
-                java.util.Map<String, SpecialAbility> result = new java.util.HashMap<>();
-                for (String key : map.keySet()) {
+                JsonObject obj = gson.fromJson(json, JsonObject.class);
+                java.util.Map<String, SpecialAbility> map = new java.util.HashMap<>();
+                for (String key : obj.keySet()) {
                     try {
-                        result.put(key, SpecialAbility.valueOf(map.get(key)));
-                    } catch (Exception ignored) {}
+                        SpecialAbility ability = SpecialAbility.valueOf(obj.get(key).getAsString());
+                        map.put(key, ability);
+                    } catch (IllegalArgumentException ex) {
+                        System.err.println("[ChickenMod] Invalid ability '" + obj.get(key).getAsString() + "' for rare chicken '" + key + "'. Skipping.");
+                    }
                 }
-                rareChickenAbilities = result;
+                rareChickenAbilities = map;
                 return rareChickenAbilities;
             } catch (Exception e) {
                 System.err.println("[ChickenMod] Error loading rare_chicken_abilities.json: " + e.getMessage());
-                e.printStackTrace();
+                // Optionally print stack trace in debug mode only
+                // e.printStackTrace();
                 rareChickenAbilities = new java.util.HashMap<>();
                 return rareChickenAbilities;
             }

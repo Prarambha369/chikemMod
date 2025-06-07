@@ -9,7 +9,7 @@
     "email": "prarambhabashyal@gmail.com"
   },
   "license": "MIT",
-  "icon": "assets/chickenmod/icon.png",
+  "icon": "assets/CHICKEMMOD.png",
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
