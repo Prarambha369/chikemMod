@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
 import java.util.ArrayList;
+import net.minecraft.entity.Entity;
 
 public class MountableChickenEntity extends ChickenEntity {
     public enum SpecialAbility {
@@ -32,7 +33,8 @@ public class MountableChickenEntity extends ChickenEntity {
     private boolean isRareChicken = false;
     private boolean hasSaddle = false;
     private SpecialAbility specialAbility = null;
-    private static List<String> rareChickenNames;
+    private static volatile List<String> rareChickenNames;
+    private static volatile java.util.Map<String, SpecialAbility> rareChickenAbilities;
     private static final Random random = new Random();
 
     public MountableChickenEntity(EntityType<? extends ChickenEntity> type, World world) {
@@ -47,7 +49,7 @@ public class MountableChickenEntity extends ChickenEntity {
                 this.setCustomNameVisible(true);
                 this.isRareChicken = true;
                 this.hasSaddle = true;
-                this.specialAbility = SpecialAbility.values()[random.nextInt(SpecialAbility.values().length)];
+                this.specialAbility = getAbilityForName(rareName);
             }
         }
     }
@@ -57,7 +59,7 @@ public class MountableChickenEntity extends ChickenEntity {
         this.setCustomNameVisible(true);
         this.isRareChicken = true;
         this.hasSaddle = true;
-        this.specialAbility = SpecialAbility.values()[random.nextInt(SpecialAbility.values().length)];
+        this.specialAbility = getAbilityForName(rareName);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -82,7 +84,6 @@ public class MountableChickenEntity extends ChickenEntity {
         return isRareChicken;
     }
 
-    @Override
     public void tick() {
         super.tick();
         if (this.hasPassengers()) {
@@ -146,21 +147,36 @@ public class MountableChickenEntity extends ChickenEntity {
         }
     }
 
+    public boolean canBeRiddenInWater() {
+        return true; // Allow riding in water
+    }
+
     public void performDash() {
-        if (!this.getWorld().isClient && this.isRareChicken && this.specialAbility == SpecialAbility.DASH && this.hasPassengers()) {
-            double dashStrength = 1.2D;
-            double upStrength = 0.6D;
-            PlayerEntity rider = null;
-            if (this.getFirstPassenger() instanceof PlayerEntity p) rider = p;
-            if (rider != null) {
-                double yawRad = Math.toRadians(rider.getYaw());
-                double x = -Math.sin(yawRad) * dashStrength;
-                double z = Math.cos(yawRad) * dashStrength;
-                this.addVelocity(x, upStrength, z);
-                this.velocityDirty = true;
-                this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.2F, 0.8F);
-            }
+        if (this.hasPassengers() && this.isRareChicken && this.specialAbility == SpecialAbility.DASH) {
+            // Give a forward burst of speed
+            Entity rider = this.getFirstPassenger();
+            double dashStrength = 1.5D;
+            double dx = this.getRotationVector().x * dashStrength;
+            double dz = this.getRotationVector().z * dashStrength;
+            this.setVelocity(dx, 0.3, dz);
+            this.velocityDirty = true;
+            this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.0F, 1.2F);
         }
+    }
+
+    public boolean isPushable() {
+        return false; // Prevent pushing while mounted
+    }
+
+    public void updatePassengerPositionCustom(Entity passenger) {
+        if (this.hasPassenger(passenger)) {
+            double offsetY = this.getMountedHeightOffset();
+            passenger.setPosition(this.getX(), this.getY() + offsetY, this.getZ());
+        }
+    }
+
+    public float getMountedHeightOffset() {
+        return 0.5F; // Adjust height for mounting
     }
 
     public static String getRandomRareChickenName() {
@@ -174,21 +190,74 @@ public class MountableChickenEntity extends ChickenEntity {
     }
 
     private static List<String> loadRareChickenNames() {
-        try {
-            InputStream stream = MountableChickenEntity.class.getClassLoader().getResourceAsStream("rare_chicken_names.json");
-            if (stream == null) return null;
-            String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-            Gson gson = new Gson();
-            JsonObject obj = gson.fromJson(json, JsonObject.class);
-            JsonArray arr = obj.getAsJsonArray("names");
-            List<String> names = new ArrayList<>();
-            for (int i = 0; i < arr.size(); i++) {
-                names.add(arr.get(i).getAsString());
+        if (rareChickenNames != null) return rareChickenNames;
+        synchronized (MountableChickenEntity.class) {
+            if (rareChickenNames != null) return rareChickenNames;
+            try {
+                InputStream stream = MountableChickenEntity.class.getClassLoader().getResourceAsStream("rare_chicken_names.json");
+                if (stream == null) {
+                    System.err.println("[ChickenMod] Failed to load resource: rare_chicken_names.json");
+                    rareChickenNames = new ArrayList<>();
+                    return rareChickenNames;
+                }
+                String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+                Gson gson = new Gson();
+                JsonObject obj = gson.fromJson(json, JsonObject.class);
+                JsonArray arr = obj.getAsJsonArray("names");
+                List<String> names = new ArrayList<>();
+                for (int i = 0; i < arr.size(); i++) {
+                    names.add(arr.get(i).getAsString());
+                }
+                rareChickenNames = names;
+                return rareChickenNames;
+            } catch (Exception e) {
+                System.err.println("[ChickenMod] Error loading rare_chicken_names.json: " + e.getMessage());
+                e.printStackTrace();
+                rareChickenNames = new ArrayList<>();
+                return rareChickenNames;
             }
-            return names;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        }
+    }
+
+    private static SpecialAbility getAbilityForName(String name) {
+        if (rareChickenAbilities == null) {
+            rareChickenAbilities = loadRareChickenAbilities();
+        }
+        if (rareChickenAbilities != null && rareChickenAbilities.containsKey(name)) {
+            return rareChickenAbilities.get(name);
+        }
+        // fallback to random if not found
+        return SpecialAbility.values()[random.nextInt(SpecialAbility.values().length)];
+    }
+
+    private static java.util.Map<String, SpecialAbility> loadRareChickenAbilities() {
+        if (rareChickenAbilities != null) return rareChickenAbilities;
+        synchronized (MountableChickenEntity.class) {
+            if (rareChickenAbilities != null) return rareChickenAbilities;
+            try {
+                InputStream stream = MountableChickenEntity.class.getClassLoader().getResourceAsStream("rare_chicken_abilities.json");
+                if (stream == null) {
+                    System.err.println("[ChickenMod] Failed to load resource: rare_chicken_abilities.json");
+                    rareChickenAbilities = new java.util.HashMap<>();
+                    return rareChickenAbilities;
+                }
+                String json = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+                Gson gson = new Gson();
+                java.util.Map<String, String> map = gson.fromJson(json, java.util.Map.class);
+                java.util.Map<String, SpecialAbility> result = new java.util.HashMap<>();
+                for (String key : map.keySet()) {
+                    try {
+                        result.put(key, SpecialAbility.valueOf(map.get(key)));
+                    } catch (Exception ignored) {}
+                }
+                rareChickenAbilities = result;
+                return rareChickenAbilities;
+            } catch (Exception e) {
+                System.err.println("[ChickenMod] Error loading rare_chicken_abilities.json: " + e.getMessage());
+                e.printStackTrace();
+                rareChickenAbilities = new java.util.HashMap<>();
+                return rareChickenAbilities;
+            }
         }
     }
 }

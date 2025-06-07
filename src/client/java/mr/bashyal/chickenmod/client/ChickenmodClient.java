@@ -55,19 +55,14 @@ public class ChickenmodClient implements ClientModInitializer {
 
         // Set up the client tick event handler
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            // Only check keys when we have a valid client with options initialized
             if (client != null && client.player != null) {
-                KeyBinding jumpKey = client.options.jumpKey; // Get jump key only when needed
-
-                // Check if dash + jump are pressed
-                if (dashKeyBinding.isPressed() && jumpKey.isPressed()) {
+                if (dashKeyBinding.isPressed()) {
                     PlayerEntity player = client.player;
                     if (player.hasVehicle()) {
                         Entity vehicle = player.getVehicle();
                         if (vehicle instanceof MountableChickenEntity chicken &&
                             chicken.isRareChicken() &&
                             chicken.getSpecialAbility() == MountableChickenEntity.SpecialAbility.DASH) {
-                            // Send dash request to server using the updated API
                             ClientPlayNetworking.send(new DashPayload());
                         }
                     }

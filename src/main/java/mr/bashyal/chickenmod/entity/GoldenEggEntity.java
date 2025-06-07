@@ -28,16 +28,17 @@ public class GoldenEggEntity extends ThrownItemEntity {
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
-            MountableChickenEntity chicken = new MountableChickenEntity(mr.bashyal.chickenmod.registry.ModEntities.MOUNTABLE_CHICKEN, this.getWorld());
-            chicken.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), 0.0F);
-            // Always rare with random name, saddle, and random ability
-            String rareName = MountableChickenEntity.getRandomRareChickenName();
-            if (rareName != null) {
-                chicken.setRareChicken(rareName);
+            if (this.random.nextFloat() < 0.3f) { // 30% chance
+                MountableChickenEntity chicken = new MountableChickenEntity(mr.bashyal.chickenmod.registry.ModEntities.MOUNTABLE_CHICKEN, this.getWorld());
+                chicken.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), 0.0F);
+                // Always rare with random name, saddle, and random ability
+                String rareName = MountableChickenEntity.getRandomRareChickenName();
+                if (rareName != null) {
+                    chicken.setRareChicken(rareName);
+                }
+                this.getWorld().spawnEntity(chicken);
             }
-            this.getWorld().spawnEntity(chicken);
             this.discard();
         }
     }
 }
-
