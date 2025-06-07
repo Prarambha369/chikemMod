@@ -1,15 +1,12 @@
 package mr.bashyal.chickenmod.item;
 
-import net.minecraft.entity.LivingEntity;
+import mr.bashyal.chickenmod.entity.GoldenEggEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import mr.bashyal.chickenmod.entity.GoldenEggEntity;
-import mr.bashyal.chickenmod.registry.ModEntities;
 
 public class GoldenEggItem extends Item {
     public GoldenEggItem(Settings settings) {

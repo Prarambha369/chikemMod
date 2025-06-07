@@ -1,12 +1,12 @@
 package mr.bashyal.chickenmod.mixin.client;
 
+import net.minecraft.client.main.Main;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.main.Main;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This mixin adds JVM flags to suppress JNI warnings.
@@ -23,7 +23,7 @@ public class JvmFlagsMixin {
     @Inject(method = "main", at = @At("HEAD"))
     private static void onMainStart(String[] args, CallbackInfo ci) {
         LOGGER.info("To suppress JNI warnings, add --enable-native-access=ALL-UNNAMED to your JVM arguments");
-        
+
         // Check if the flag is already set
         boolean hasNativeAccessFlag = false;
         for (String arg : args) {
@@ -32,7 +32,7 @@ public class JvmFlagsMixin {
                 break;
             }
         }
-        
+
         if (!hasNativeAccessFlag) {
             LOGGER.info("JNI warnings about restricted methods are expected and can be safely ignored");
         }

@@ -3,20 +3,20 @@ package mr.bashyal.chickenmod.mixin.client;
 import com.mojang.text2speech.Narrator;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.text.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Mixin(NarratorManager.class)
 public class NarratorManagerMixin {
     private static final Logger LOGGER = LoggerFactory.getLogger("ChickenMod");
 
-    @Shadow private Narrator narrator;
+    @Shadow
+    private Narrator narrator;
     private static boolean loggedNarratorWarning = false;
 
     /**

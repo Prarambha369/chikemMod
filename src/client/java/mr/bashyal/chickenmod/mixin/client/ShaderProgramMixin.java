@@ -1,10 +1,9 @@
 package mr.bashyal.chickenmod.mixin.client;
 
+import net.minecraft.client.gl.ShaderProgram;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.render.RenderPhase;
 
 /**
  * This mixin suppresses the warning about missing Sampler2 in the rendertype_entity_translucent_emissive shader.
@@ -20,8 +19,8 @@ public class ShaderProgramMixin {
     private String modifySamplerName(String name) {
         // If this is the Sampler2 we're trying to suppress warnings for,
         // we'll modify it to a name that exists in the shader
-        if (name != null && name.equals("Sampler2") && 
-            ((ShaderProgram)(Object)this).getName().equals("rendertype_entity_translucent_emissive")) {
+        if (name != null && name.equals("Sampler2") &&
+                ((ShaderProgram) (Object) this).getName().equals("rendertype_entity_translucent_emissive")) {
             // Return a sampler name that does exist in the shader to avoid the warning
             // This is a hack, but it should work to suppress the warning
             return "Sampler0";

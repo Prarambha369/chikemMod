@@ -4,7 +4,9 @@
   "version": "1.21",
   "name": "ChickemMod",
   "description": "chickem mod yummy",
-  "authors": ["MrBashyal"],
+  "authors": [
+    "MrBashyal"
+  ],
   "contact": {
     "email": "prarambhabashyal@gmail.com"
   },
