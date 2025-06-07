@@ -39,3 +39,4 @@ public class GoldenEggEntity extends ThrownItemEntity {
         }
     }
 }
+
