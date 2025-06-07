@@ -1,10 +1,12 @@
-
- ![CHICKEMMOD.png](src/main/resources/assets/CHICKEMMOD.png)
+![CHICKEMMOD.png](src/main/resources/assets/CHICKEMMOD.png)
 ![License](https://img.shields.io/badge/license-MIT-blue)   ![Hackatime Badge](https://hackatime-badge.hackclub.com/U0894AG5K1C/ChickenMod)
 > Chikem Mod Yummy !!
 
 ## ChickenMod
-ChickenMod is a modification designed to enhance gameplay by introducing unique features and abilities related to chickens. From rare chicken breeds with special powers to customizable chicken behaviors, this mod adds an exciting layer of complexity and fun to the game.
+
+ChickenMod is a modification designed to enhance gameplay by introducing unique features and abilities related to
+chickens. From rare chicken breeds with special powers to customizable chicken behaviors, this mod adds an exciting
+layer of complexity and fun to the game.
 
 ## Features
 
@@ -23,7 +25,8 @@ ChickenMod is a modification designed to enhance gameplay by introducing unique 
 
 ## Contribution Guidelines
 
-This project is open source, and contributions are welcome!  
+This project is open source, and contributions are welcome!
+
 - Fork the repository on GitHub.
 - Create a new branch for your changes.
 - Submit a pull request with a detailed description of your changes.
@@ -40,4 +43,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Support
 
-If you like this project, consider supporting its development by following the repository, starring it on GitHub, or making a donation to [NextEra-Development](https://github.com/NextEra-Development).
+If you like this project, consider supporting its development by following the repository, starring it on GitHub, or
+making a donation to [NextEra-Development](https://github.com/NextEra-Development).

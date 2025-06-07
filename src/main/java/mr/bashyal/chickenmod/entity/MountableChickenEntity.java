@@ -1,4 +1,9 @@
 package mr.bashyal.chickenmod.entity;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.WanderAroundGoal;
@@ -9,19 +14,15 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
-import java.util.ArrayList;
-import net.minecraft.entity.Entity;
 
 public class MountableChickenEntity extends ChickenEntity {
     public enum SpecialAbility {
@@ -131,16 +132,16 @@ public class MountableChickenEntity extends ChickenEntity {
                 if (this.random.nextInt(6000) == 0) { // same as vanilla chicken
                     this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                     this.getWorld().spawnEntity(new net.minecraft.entity.ItemEntity(
-                        this.getWorld(), this.getX(), this.getY(), this.getZ(),
-                        new net.minecraft.item.ItemStack(mr.bashyal.chickenmod.registry.ModItems.GOLDEN_EGG)));
+                            this.getWorld(), this.getX(), this.getY(), this.getZ(),
+                            new net.minecraft.item.ItemStack(mr.bashyal.chickenmod.registry.ModItems.GOLDEN_EGG)));
                 }
             } else {
                 // Lay normal egg (vanilla behavior)
                 if (this.random.nextInt(6000) == 0) {
                     this.playSound(SoundEvents.ENTITY_CHICKEN_EGG, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
                     this.getWorld().spawnEntity(new net.minecraft.entity.ItemEntity(
-                        this.getWorld(), this.getX(), this.getY(), this.getZ(),
-                        new net.minecraft.item.ItemStack(net.minecraft.item.Items.EGG)));
+                            this.getWorld(), this.getX(), this.getY(), this.getZ(),
+                            new net.minecraft.item.ItemStack(net.minecraft.item.Items.EGG)));
                 }
             }
         }
