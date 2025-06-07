@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.entity.ChickenEntityRenderer;
+import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.ChickenEntity;
@@ -43,6 +44,9 @@ public class ChickenmodClient implements ClientModInitializer {
                     }
                 }
         );
+
+        // Register golden egg renderer
+        EntityRendererRegistry.register(ModEntities.GOLDEN_EGG_ENTITY, FlyingItemEntityRenderer::new);
 
         // Register our dash key binding
         dashKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
