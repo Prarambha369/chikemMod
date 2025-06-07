@@ -117,3 +117,5 @@ runs/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
+/src/main/resources/assets/chickenmod/models/item/chicken_super_feed.json
+/src/main/resources/assets/chickenmod/models/item/golden_egg.json
