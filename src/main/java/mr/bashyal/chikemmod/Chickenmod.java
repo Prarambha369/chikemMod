@@ -1,6 +1,7 @@
 package mr.bashyal.chikemmod;
 
 import mr.bashyal.chikemmod.network.DashPayload;
+import mr.bashyal.chikemmod.network.DashPayloadCodec;
 import mr.bashyal.chikemmod.registry.ModEffects;
 import mr.bashyal.chikemmod.registry.ModEntities;
 import mr.bashyal.chikemmod.registry.ModEntityAttributes;
@@ -22,7 +23,7 @@ public class Chickenmod implements ModInitializer {
         ModEffects.register();
 
         // Register the DashPayload type for networking (serverbound)
-        PayloadTypeRegistry.playC2S().register(DashPayload.ID, PacketCodec.unit(DashPayload.INSTANCE));
+        PayloadTypeRegistry.playC2S().register(DashPayload.ID, DashPayloadCodec.INSTANCE);
 
         ServerPlayNetworking.registerGlobalReceiver(DashPayload.ID, (server, player) -> {
             if (player instanceof ServerPlayerEntity serverPlayer) {
