@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "chickenmod",
+  "id": "chikemmod",
   "version": "1.21",
   "name": "ChickemMod",
   "description": "chickem mod yummy",
@@ -15,19 +15,19 @@
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
-      "mr.bashyal.chickenmod.client.ChickenmodDataGenerator"
+      "mr.bashyal.chikemmod.client.ChickenmodDataGenerator"
     ],
     "client": [
-      "mr.bashyal.chickenmod.client.ChickenmodClient"
+      "mr.bashyal.chikemmod.client.ChickenmodClient"
     ],
     "main": [
-      "mr.bashyal.chickenmod.Chickenmod"
+      "mr.bashyal.chikemmod.Chickenmod"
     ]
   },
   "mixins": [
-    "chickenmod.mixins.json",
+    "chikemmod.mixins.json",
     {
-      "config": "chickenmod.client.mixins.json",
+      "config": "chikemmod.client.mixins.json",
       "environment": "client"
     }
   ],

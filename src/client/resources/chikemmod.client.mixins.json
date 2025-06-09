@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "mr.bashyal.chikemmod.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "JvmFlagsMixin",
+    "NarratorManagerMixin",
+    "ShaderProgramMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
