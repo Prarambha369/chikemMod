@@ -72,7 +72,7 @@ public class MountableChickenEntity extends ChickenEntity {
      }
 
      public boolean canBeRidden() {
-         return true;
+         return isRareChicken; // only rare chickens can be ridden
      }
 
      public void tick() {

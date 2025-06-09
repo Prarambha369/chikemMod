@@ -2,11 +2,12 @@ package mr.bashyal.chickenmod.registry;
 
 import mr.bashyal.chickenmod.entity.GoldenEggEntity;
 import mr.bashyal.chickenmod.entity.MountableChickenEntity;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 
 public class ModEntities {
     public static final EntityType<MountableChickenEntity> MOUNTABLE_CHICKEN = Registry.register(
@@ -27,6 +28,8 @@ public class ModEntities {
 
     public static void register() {
         // Entities registered via static initializer
+        // Spawn rare mountable chickens naturally in overworld
+        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(), SpawnGroup.CREATURE,
+                MOUNTABLE_CHICKEN, 1, 1, 1);
     }
 }
-

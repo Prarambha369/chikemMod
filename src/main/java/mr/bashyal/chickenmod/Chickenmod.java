@@ -6,13 +6,9 @@ import mr.bashyal.chickenmod.registry.ModEntities;
 import mr.bashyal.chickenmod.registry.ModEntityAttributes;
 import mr.bashyal.chickenmod.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.village.TradeOffers;
 
@@ -24,9 +20,6 @@ public class Chickenmod implements ModInitializer {
         ModEntityAttributes.register();
         ModItems.register();
         ModEffects.register();
-        // spawn mountable chickens rarely in overworld
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(), SpawnGroup.CREATURE,
-                ModEntities.MOUNTABLE_CHICKEN, 1, 1, 1);
 
         // Register the DashPayload type for networking (serverbound)
         PayloadTypeRegistry.playC2S().register(DashPayload.ID, PacketCodec.unit(DashPayload.INSTANCE));
