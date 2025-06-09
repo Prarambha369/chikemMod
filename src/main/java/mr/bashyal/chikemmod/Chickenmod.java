@@ -7,6 +7,7 @@ import mr.bashyal.chikemmod.registry.ModEntities;
 import mr.bashyal.chikemmod.registry.ModEntityAttributes;
 import mr.bashyal.chikemmod.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
@@ -21,6 +22,11 @@ public class Chickenmod implements ModInitializer {
         ModEntityAttributes.register();
         ModItems.register();
         ModEffects.register();
+
+        // Register commands
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+            ChickenmodCommands.register(dispatcher);
+        });
 
         // Register the DashPayload type for networking (serverbound)
         PayloadTypeRegistry.playC2S().register(DashPayload.ID, DashPayloadCodec.INSTANCE);
