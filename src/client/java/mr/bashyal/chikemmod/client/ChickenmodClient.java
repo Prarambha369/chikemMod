@@ -18,10 +18,16 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+/**
+ * Client-side initializer for ChickenMod.
+ * Handles entity renderers, key bindings, and client events.
+ */
 public class ChickenmodClient implements ClientModInitializer {
     public static KeyBinding dashKeyBinding;
 
-    // Create a custom payload for the dash action
+    /**
+     * Custom payload for the dash action, sent from client to server.
+     */
     public static final class DashPayload implements CustomPayload {
         public static final Identifier IDENTIFIER = Identifier.of("chikemmod", "dash");
 
@@ -31,15 +37,18 @@ public class ChickenmodClient implements ClientModInitializer {
         }
     }
 
+    /**
+     * Initializes client-side features: renderers, key bindings, and event handlers.
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public void onInitializeClient() {
         // Register mountable chicken renderer
         EntityRendererRegistry.register(ModEntities.MOUNTABLE_CHICKEN,
                 context -> new ChickenEntityRenderer(context) {
-                    // Must use the exact method signature from parent class
                     @Override
                     public Identifier getTexture(ChickenEntity entity) {
-                        // Cast to MountableChickenEntity if needed for specific behavior
+                        // Always use the mountable chicken texture
                         return Identifier.of("chikemmod", "textures/entity/mountable_chicken.png");
                     }
                 }
@@ -56,7 +65,7 @@ public class ChickenmodClient implements ClientModInitializer {
                 "category.chikemmod"
         ));
 
-        // Set up the client tick event handler
+        // Set up the client tick event handler for dash ability
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client != null && client.player != null) {
                 if (dashKeyBinding.isPressed()) {
