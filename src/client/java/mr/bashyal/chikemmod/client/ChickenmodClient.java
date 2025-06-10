@@ -40,7 +40,6 @@ public class ChickenmodClient implements ClientModInitializer {
     /**
      * Initializes client-side features: renderers, key bindings, and event handlers.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public void onInitializeClient() {
         // Register mountable chicken renderer
