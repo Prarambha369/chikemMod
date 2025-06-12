@@ -1,4 +1,6 @@
 {
   "item.chikemmod.golden_egg": "Golden Egg",
-  "item.chikemmod.golchick_food": "GolChickFood"
+  "item.chikemmod.golchick_food": "GolChickFood",
+  "key.chikemmod.dash": "Dash",
+  "category.chikemmod": "ChickemMod"
 }
