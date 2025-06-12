@@ -1,8 +1,9 @@
 package mr.bashyal.chikemmod.entity;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.entity.Entity;
+import mr.bashyal.chikemmod.registry.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.WanderAroundGoal;
@@ -25,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.item.ItemStack;
 
 public class MountableChickenEntity extends ChickenEntity {
     public enum SpecialAbility {
@@ -36,6 +38,7 @@ public class MountableChickenEntity extends ChickenEntity {
      private static volatile List<String> rareChickenNames;
      private static volatile java.util.Map<String, SpecialAbility> rareChickenAbilities;
      private static final Random random = new Random();
+     private net.minecraft.item.Item lastBredWith = null;
 
     // expose rarity and ability for external checks
     public boolean isRareChicken() { return isRareChicken; }
@@ -226,12 +229,34 @@ public class MountableChickenEntity extends ChickenEntity {
 
      @Override
      public ActionResult interactMob(PlayerEntity player, Hand hand) {
+         ItemStack stack = player.getStackInHand(hand);
+         if (this.isBreedingItem(stack)) {
+             this.lastBredWith = stack.getItem();
+         } else if (isSeed(stack)) {
+             this.lastBredWith = stack.getItem();
+         }
          if (!this.getWorld().isClient && this.canBeRidden() && !player.hasVehicle()) {
              player.startRiding(this);
              return ActionResult.SUCCESS;
          }
          return super.interactMob(player, hand);
      }
+
+     private boolean isSeed(ItemStack stack) {
+         return stack.getItem() == net.minecraft.item.Items.WHEAT_SEEDS ||
+               stack.getItem() == net.minecraft.item.Items.BEETROOT_SEEDS ||
+               stack.getItem() == net.minecraft.item.Items.PUMPKIN_SEEDS ||
+               stack.getItem() == net.minecraft.item.Items.MELON_SEEDS ||
+               stack.getItem() == net.minecraft.item.Items.TORCHFLOWER_SEEDS;
+     }
+
+     public net.minecraft.item.Item getLastBredWith() {
+        return lastBredWith;
+    }
+
+    public void clearLastBredWith() {
+        lastBredWith = null;
+    }
 
      @Override
      public void travel(Vec3d movementInput) {
@@ -244,7 +269,7 @@ public class MountableChickenEntity extends ChickenEntity {
              // Handle jump input (movementInput.y > 0 indicates jump button)
              if (movementInput.y > 0.0D && this.isOnGround()) {
                  // Jump one block high
-                 double jumpStrength = Math.sqrt(0.16D * 1.0D);
+                 double jumpStrength = Math.sqrt(0.16D);
                  this.setVelocity(this.getVelocity().x, jumpStrength, this.getVelocity().z);
                  this.velocityDirty = true;
              }
@@ -255,4 +280,77 @@ public class MountableChickenEntity extends ChickenEntity {
              super.travel(movementInput);
          }
      }
+
+    public boolean isBreedingItem(ItemStack stack) {
+        // Only GolChickFood can breed MountableChickenEntity
+        return stack.getItem() == ModItems.GOLCHICK_FOOD;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public ChickenEntity createChild(net.minecraft.server.world.ServerWorld world, net.minecraft.entity.passive.PassiveEntity entity) {
+        MountableChickenEntity parent1 = this instanceof MountableChickenEntity ? (MountableChickenEntity) this : null;
+        MountableChickenEntity parent2 = entity instanceof MountableChickenEntity ? (MountableChickenEntity) entity : null;
+        net.minecraft.item.Item item1 = parent1 != null ? parent1.getLastBredWith() : null;
+        net.minecraft.item.Item item2 = parent2 != null ? parent2.getLastBredWith() : null;
+        boolean isGolChickFood1 = item1 == ModItems.GOLCHICK_FOOD;
+        boolean isGolChickFood2 = item2 == ModItems.GOLCHICK_FOOD;
+        boolean isSeed1 = parent1 != null && parent1.isSeed(new ItemStack(item1));
+        boolean isSeed2 = parent2 != null && parent2.isSeed(new ItemStack(item2));
+        boolean bothMountable = parent1 != null && parent2 != null;
+        boolean bothVanilla = parent1 == null && parent2 == null;
+        boolean oneMountable = (parent1 != null && parent2 == null) || (parent1 == null && parent2 != null);
+
+        // GolChickFood logic
+        if (isGolChickFood1 || isGolChickFood2) {
+            if (bothMountable) {
+                // 100% MountableChickenEntity
+                clearLastBredWith();
+                if (parent2 != null) parent2.clearLastBredWith();
+                return new MountableChickenEntity((EntityType<? extends ChickenEntity>) this.getType(), world);
+            } else if (bothVanilla) {
+                // 10% MountableChickenEntity if both vanilla and GolChickFood used
+                if (world.getRandom().nextInt(100) < 10) {
+                    clearLastBredWith();
+                    return new MountableChickenEntity((EntityType<? extends ChickenEntity>) this.getType(), world);
+                } else {
+                    clearLastBredWith();
+                    return EntityType.CHICKEN.create(world);
+                }
+            }
+        }
+        // Seed logic
+        if ((isSeed1 || isSeed2)) {
+            int chance = 0;
+            if (bothMountable) {
+                chance = 10; // 10%
+            } else if (bothVanilla) {
+                chance = 1; // 1%
+            } else if (oneMountable) {
+                chance = 15; // 1.5% (scaled to 15/1000)
+                if (world.getRandom().nextInt(1000) < chance) {
+                    clearLastBredWith();
+                    if (parent2 != null) parent2.clearLastBredWith();
+                    return new MountableChickenEntity((EntityType<? extends ChickenEntity>) this.getType(), world);
+                } else {
+                    clearLastBredWith();
+                    if (parent2 != null) parent2.clearLastBredWith();
+                    return EntityType.CHICKEN.create(world);
+                }
+            }
+            if (chance > 0 && world.getRandom().nextInt(100) < chance) {
+                clearLastBredWith();
+                if (parent2 != null) parent2.clearLastBredWith();
+                return new MountableChickenEntity((EntityType<? extends ChickenEntity>) this.getType(), world);
+            } else {
+                clearLastBredWith();
+                if (parent2 != null) parent2.clearLastBredWith();
+                return EntityType.CHICKEN.create(world);
+            }
+        }
+        // Default fallback
+        clearLastBredWith();
+        if (parent2 != null) parent2.clearLastBredWith();
+        return EntityType.CHICKEN.create(world);
+    }
 }
