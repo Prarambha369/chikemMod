@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.item.ItemStack;
+import mr.bashyal.chikemmod.mixin.MixinPlayerEntity;
 
 public class MountableChickenEntity extends ChickenEntity {
     public enum SpecialAbility {
@@ -100,9 +101,9 @@ public class MountableChickenEntity extends ChickenEntity {
                          this.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20, 0, true, false));
                      }
                      
-                     // If falling, reduce vertical velocity for a smoother descent
+                     // If falling, reduce vertical velocity for a controlled but faster descent
                      if (this.getVelocity().y < 0) {
-                         this.setVelocity(this.getVelocity().x, Math.max(this.getVelocity().y * 0.6, -0.2), this.getVelocity().z);
+                         this.setVelocity(this.getVelocity().x, Math.max(this.getVelocity().y * 0.8, -0.4), this.getVelocity().z);
                          this.velocityDirty = true;
                      }
                  }
@@ -296,8 +297,12 @@ public class MountableChickenEntity extends ChickenEntity {
                  this.velocityDirty = true;
              }
 
-             // Enhanced auto-jump when moving forward
-             if (this.isOnGround() && this.forwardSpeed > 0.1F && !this.isTouchingWater() && this.random.nextFloat() < 0.8F) {
+             // Jump only when spacebar is pressed (using our mixin for jump detection)
+             boolean shouldJump = false;
+             if (rider instanceof PlayerEntity) {
+                 shouldJump = ((MixinPlayerEntity) (Object) rider).shouldMountJump();
+             }
+             if (this.isOnGround() && shouldJump && !this.isTouchingWater()) {
                  // Check in multiple directions for better edge detection
                  Vec3d lookVec = this.getRotationVector();
                  Vec3d sideVec = new Vec3d(-lookVec.z, 0, lookVec.x).normalize().multiply(0.5);
