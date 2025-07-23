@@ -2,13 +2,12 @@ package mr.bashyal.chikemmod.mixin;
 
 import mr.bashyal.chikemmod.entity.MountableChickenEntity;
 import mr.bashyal.chikemmod.registry.ModItems;
+import mr.bashyal.chikemmod.registry.ModEntities;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,10 +21,10 @@ public abstract class MixinChickenEntity {
     private static final Random RANDOM = new Random();
 
     /**
-     * Allow GolChickFood as a breeding item for vanilla chickens.
+     * Allow GolChick Food as a breeding item for vanilla chickens.
      *
      * @author Prarambha369
-     * @reason Allow custom mod food (GolChickFood) to be used for breeding vanilla chickens.
+     * @reason Allow custom mod food (GolChick Food) to be used for breeding vanilla chickens.
      */
     @Overwrite
     public boolean isBreedingItem(ItemStack stack) {
@@ -53,7 +52,7 @@ public abstract class MixinChickenEntity {
             // Higher chance to create a MountableChickenEntity instead of regular chicken
             if (RANDOM.nextFloat() < 0.3f) { // 30% chance for premium breeding
                 MountableChickenEntity baby = new MountableChickenEntity(
-                    (EntityType<? extends ChickenEntity>) mr.bashyal.chikemmod.registry.ModEntities.MOUNTABLE_CHICKEN,
+                    (EntityType<? extends ChickenEntity>) ModEntities.MOUNTABLE_CHICKEN,
                     world
                 );
 

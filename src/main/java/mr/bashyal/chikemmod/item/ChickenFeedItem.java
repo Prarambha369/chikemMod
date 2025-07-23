@@ -98,6 +98,19 @@ public class ChickenFeedItem extends Item {
     private void handleMountableChicken(MountableChickenEntity mountable, PlayerEntity user, World world) {
         int feedCount = getFeedCount(mountable);
 
+        // Enable breeding for mountable chickens
+        if (mountable.getBreedingAge() == 0) {
+            int loveTime = 800 + (feedCount * 60); // Base 40s + 3s per feeding
+            mountable.setLoveTicks(Math.min(loveTime, 1200)); // Cap at 1 minute
+
+            user.sendMessage(Text.literal("💕 Your mountable chicken is ready for breeding!")
+                .formatted(Formatting.LIGHT_PURPLE), false);
+        } else if (mountable.getBreedingAge() < 0) {
+            // Reduce baby growth time (more effective with better nutrition)
+            int growthBonus = 1400 + (feedCount * 120);
+            mountable.setBreedingAge(Math.min(0, mountable.getBreedingAge() + growthBonus));
+        }
+
         // Increase chance of becoming rare based on nutrition level
         float rareChance = 0.15f + (feedCount * 0.02f); // Base 15% + 2% per feeding
         rareChance = Math.min(rareChance, 0.35f); // Cap at 35%
@@ -141,7 +154,7 @@ public class ChickenFeedItem extends Item {
             // Golden egg for rare chickens
             world.spawnEntity(new net.minecraft.entity.ItemEntity(
                 world, mountable.getX(), mountable.getY(), mountable.getZ(),
-                new net.minecraft.item.ItemStack(mr.bashyal.chikemmod.registry.ModItems.GOLDEN_EGG)));
+                new ItemStack(mr.bashyal.chikemmod.registry.ModItems.GOLDEN_EGG)));
             user.sendMessage(Text.literal("🥇 Your rare chicken laid a golden egg!")
                 .formatted(Formatting.GOLD), false);
         } else if (eventRoll < 0.7f) {
@@ -163,14 +176,27 @@ public class ChickenFeedItem extends Item {
     private void handleRegularChicken(ChickenEntity chicken, PlayerEntity user, World world) {
         int feedCount = getFeedCount(chicken);
 
-        // Increase breeding readiness
+        // Primary breeding functionality - Set chicken in love mode
         if (chicken.getBreedingAge() == 0) {
             int loveTime = 600 + (feedCount * 60); // Base 30s + 3s per feeding
             chicken.setLoveTicks(Math.min(loveTime, 1200)); // Cap at 1 minute
+
+            user.sendMessage(Text.literal("💕 This chicken is now ready for breeding!")
+                .formatted(Formatting.LIGHT_PURPLE), false);
+
+            // Add hearts particles to show breeding readiness
+            if (world instanceof ServerWorld serverWorld) {
+                serverWorld.spawnParticles(ParticleTypes.HEART,
+                    chicken.getX(), chicken.getY() + 0.5, chicken.getZ(),
+                    5, 0.5, 0.5, 0.5, 0.0);
+            }
         } else if (chicken.getBreedingAge() < 0) {
             // Reduce baby growth time (more effective with better nutrition)
             int growthBonus = 1200 + (feedCount * 100);
             chicken.setBreedingAge(Math.min(0, chicken.getBreedingAge() + growthBonus));
+
+            user.sendMessage(Text.literal("🐣 The nutritious food is helping this baby chicken grow faster!")
+                .formatted(Formatting.GREEN), false);
         }
 
         // Better nutrition increases special event chances
@@ -183,13 +209,13 @@ public class ChickenFeedItem extends Item {
             if (feedCount >= 3 && RANDOM.nextFloat() < 0.3f) {
                 world.spawnEntity(new net.minecraft.entity.ItemEntity(
                     world, chicken.getX(), chicken.getY(), chicken.getZ(),
-                    new net.minecraft.item.ItemStack(net.minecraft.item.Items.EGG)));
+                    new ItemStack(net.minecraft.item.Items.EGG)));
                 user.sendMessage(Text.literal("🥚 Your well-fed chicken laid a bonus egg!")
                     .formatted(Formatting.GREEN), false);
             }
         }
 
-        // Attract nearby chickens for breeding
+        // Attract nearby chickens for breeding if this chicken is well-fed
         if (feedCount >= 5 && RANDOM.nextFloat() < 0.20f) {
             attractNearbyChickens(chicken, world, user);
         }
@@ -201,20 +227,20 @@ public class ChickenFeedItem extends Item {
                 targetChicken.getBoundingBox().expand(8.0),
                 chicken -> chicken != targetChicken && chicken.getBreedingAge() == 0);
 
-            int madeReady = 0;
-            for (ChickenEntity nearbyChicken : nearbyChickens) {
-                if (RANDOM.nextFloat() < 0.30f && madeReady < 2) {
-                    nearbyChicken.setLoveTicks(600);
-                    madeReady++;
+            if (!nearbyChickens.isEmpty()) {
+                // Set nearby chickens in love mode too
+                for (ChickenEntity nearbyChicken : nearbyChickens) {
+                    if (nearbyChicken.getLoveTicks() <= 0) {
+                        nearbyChicken.setLoveTicks(600);
 
-                    serverWorld.spawnParticles(ParticleTypes.HEART,
-                        nearbyChicken.getX(), nearbyChicken.getY() + 0.5, nearbyChicken.getZ(),
-                        3, 0.3, 0.2, 0.3, 0.0);
+                        // Spawn attraction particles
+                        serverWorld.spawnParticles(ParticleTypes.HEART,
+                            nearbyChicken.getX(), nearbyChicken.getY() + 0.5, nearbyChicken.getZ(),
+                            3, 0.3, 0.3, 0.3, 0.0);
+                    }
                 }
-            }
 
-            if (madeReady > 0) {
-                user.sendMessage(Text.literal("💞 " + madeReady + " nearby chicken(s) were attracted by the feed!")
+                user.sendMessage(Text.literal("💕 The delicious aroma attracted " + nearbyChickens.size() + " nearby chickens for breeding!")
                     .formatted(Formatting.LIGHT_PURPLE), false);
             }
         }
@@ -223,68 +249,34 @@ public class ChickenFeedItem extends Item {
     private void provideFeedingFeedback(ChickenEntity chicken, PlayerEntity user, World world) {
         int feedCount = getFeedCount(chicken);
 
-        // Different sounds and particles based on nutrition level
-        if (feedCount >= 10) {
-            // Well-nourished chicken
-            world.playSound(null, chicken.getX(), chicken.getY(), chicken.getZ(),
-                SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.NEUTRAL, 1.0F, 1.5F);
+        // Play feeding sounds
+        world.playSound(null, chicken.getBlockPos(), SoundEvents.ENTITY_CHICKEN_EGG,
+            SoundCategory.NEUTRAL, 0.5F, 1.0F + (feedCount * 0.1F));
 
-            if (world instanceof ServerWorld serverWorld) {
+        // Visual feedback based on nutrition level
+        if (world instanceof ServerWorld serverWorld) {
+            if (feedCount >= 10) {
+                // Golden particles for very well-fed chickens
+                serverWorld.spawnParticles(ParticleTypes.END_ROD,
+                    chicken.getX(), chicken.getY() + 0.5, chicken.getZ(),
+                    8, 0.3, 0.3, 0.3, 0.02);
+                user.sendMessage(Text.literal("✨ This chicken is exceptionally well-fed! (Fed " + feedCount + " times)")
+                    .formatted(Formatting.GOLD), false);
+            } else if (feedCount >= 5) {
+                // Green particles for well-fed chickens
                 serverWorld.spawnParticles(ParticleTypes.HAPPY_VILLAGER,
                     chicken.getX(), chicken.getY() + 0.5, chicken.getZ(),
-                    8, 0.5, 0.3, 0.5, 0.0);
-            }
-
-            if (feedCount == 10) {
-                user.sendMessage(Text.literal("🌟 This chicken is now perfectly nourished!")
-                    .formatted(Formatting.GOLD), false);
-            }
-
-        } else if (feedCount >= 5) {
-            // Well-fed chicken
-            world.playSound(null, chicken.getX(), chicken.getY(), chicken.getZ(),
-                SoundEvents.ENTITY_CHICKEN_AMBIENT, SoundCategory.NEUTRAL, 1.0F, 1.3F);
-
-            if (world instanceof ServerWorld serverWorld) {
-                serverWorld.spawnParticles(ParticleTypes.HEART,
-                    chicken.getX(), chicken.getY() + 0.5, chicken.getZ(),
-                    6, 0.5, 0.3, 0.5, 0.0);
-            }
-
-            if (feedCount == 5) {
-                user.sendMessage(Text.literal("💚 This chicken is well-fed and healthy!")
+                    5, 0.3, 0.3, 0.3, 0.0);
+                user.sendMessage(Text.literal("🌟 This chicken is well-fed and healthy! (Fed " + feedCount + " times)")
                     .formatted(Formatting.GREEN), false);
-            }
-
-        } else {
-            // Regular feeding
-            world.playSound(null, chicken.getX(), chicken.getY(), chicken.getZ(),
-                SoundEvents.ENTITY_CHICKEN_AMBIENT, SoundCategory.NEUTRAL, 1.0F, 1.2F);
-
-            if (world instanceof ServerWorld serverWorld) {
-                serverWorld.spawnParticles(ParticleTypes.HEART,
+            } else {
+                // Basic particles for newly fed chickens - using CRIT particles instead
+                serverWorld.spawnParticles(ParticleTypes.CRIT,
                     chicken.getX(), chicken.getY() + 0.5, chicken.getZ(),
-                    5, 0.5, 0.3, 0.5, 0.0);
+                    3, 0.2, 0.2, 0.2, 0.0);
+                user.sendMessage(Text.literal("🐔 Chicken fed successfully! (Fed " + feedCount + " times)")
+                    .formatted(Formatting.YELLOW), false);
             }
         }
-    }
-
-    @Override
-    public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        // Enhanced effects when players eat it directly
-        if (!world.isClient && user instanceof PlayerEntity player) {
-            // Give player beneficial effects related to chickens
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 20 * 60 * 5, 0)); // 5 minutes of luck
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20 * 30, 0)); // 30 seconds slow fall
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 20 * 60 * 2, 0)); // 2 minutes speed
-
-            player.sendMessage(Text.literal("🌟 You feel energized by the premium chicken feed!")
-                .formatted(Formatting.GREEN), false);
-
-            // Restore some hunger and saturation
-            player.getHungerManager().add(4, 0.6f);
-        }
-
-        return super.finishUsing(stack, world, user);
     }
 }
