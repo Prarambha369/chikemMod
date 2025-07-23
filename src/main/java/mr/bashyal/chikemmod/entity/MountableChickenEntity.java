@@ -32,7 +32,7 @@ import net.minecraft.item.ItemStack;
 
 public class MountableChickenEntity extends ChickenEntity {
     public enum SpecialAbility {
-        SPEED, DASH, SLOW_FALL, LUCK
+        SPEED, SLOW_FALL, LUCK
     }
 
      private boolean isRareChicken = false;
@@ -50,8 +50,6 @@ public class MountableChickenEntity extends ChickenEntity {
          super(type, world);
          this.goalSelector.add(1, new WanderAroundGoal(this, 1.0));
          this.goalSelector.add(2, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-         // Enable auto-step for smooth movement over blocks
-         this.setStepHeight(1.0F);
          // Rare spawn logic: 1 in 612 chance (like pink sheep)
          if (!world.isClient && random.nextInt(612) == 0) {
              String rareName = getRandomRareChickenName();
@@ -86,12 +84,26 @@ public class MountableChickenEntity extends ChickenEntity {
          super.tick();
          if (this.hasPassengers()) {
              if (!this.getWorld().isClient && this.getFirstPassenger() instanceof PlayerEntity rider) {
-                 // SLOW_FALL: Prevent fall damage and apply slow falling
+                 // SLOW_FALL: Prevent fall damage and apply slow falling with controlled descent
                  if (this.specialAbility == SpecialAbility.SLOW_FALL) {
+                     // Reset fall distance to prevent fall damage
                      this.fallDistance = 0;
                      rider.fallDistance = 0;
+                     
+                     // Apply slow falling effect if not already present
                      if (!rider.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
-                         rider.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 10, 0, true, false));
+                         rider.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20, 0, true, false));
+                     }
+                     
+                     // Apply slow falling to the chicken as well
+                     if (!this.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
+                         this.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20, 0, true, false));
+                     }
+                     
+                     // If falling, reduce vertical velocity for a smoother descent
+                     if (this.getVelocity().y < 0) {
+                         this.setVelocity(this.getVelocity().x, Math.max(this.getVelocity().y * 0.6, -0.2), this.getVelocity().z);
+                         this.velocityDirty = true;
                      }
                  }
                  // LUCK: Apply Luck effect to rider
@@ -267,6 +279,8 @@ public class MountableChickenEntity extends ChickenEntity {
      @Override
      public void travel(Vec3d movementInput) {
          if (this.hasPassengers() && this.getFirstPassenger() instanceof LivingEntity rider) {
+             // Step height is handled by the game's default behavior
+             
              // Apply rider steering and orientation
              this.setRotation(rider.getYaw(), rider.getPitch() * 0.5F);
              this.sidewaysSpeed = rider.sidewaysSpeed;

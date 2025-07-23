@@ -45,7 +45,6 @@ public class ChickenFeedItem extends Item {
                     case SPEED -> StatusEffects.SPEED;
                     case SLOW_FALL -> StatusEffects.SLOW_FALLING;
                     case LUCK -> StatusEffects.LUCK;
-                    case DASH -> StatusEffects.SPEED; // approximate dash with speed
                 };
                 player.addStatusEffect(new StatusEffectInstance(effect, 20 * 60 * 2, 0));
             } else {
