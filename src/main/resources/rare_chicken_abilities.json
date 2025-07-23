@@ -1,9 +1,12 @@
 {
-  "Kazuki Sakahashi": "SPEED",
-  "Hinata SFawstrike": "SLOW_FALL",
-  "Tori Lamaguchi": "LUCK",
-  "Shiro Sggami": "SPEED",
-  "Ayame SFenshin": "SLOW_FALL",
-  "Takumi Loosteru": "LUCK",
-  "Yuki Shickamoto": "SPEED"
+  "Kazuki Takahashi": "SPEED",
+  "Ryoichi Featherblade": "SPEED",
+  "Hinata Clawstrike": "SLOW_FALL",
+  "Tori Yamaguchi": "LUCK",
+  "Shiro Eggami": "SPEED",
+  "Kensuke Peckara": "SLOW_FALL",
+  "Ayame Henshin": "LUCK",
+  "Takumi Roosteru": "SPEED",
+  "Sora Wingata": "SLOW_FALL",
+  "Yuki Chickamoto": "LUCK"
 }

@@ -1,8 +1,8 @@
 package mr.bashyal.chikemmod.entity;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import mr.bashyal.chikemmod.interfaces.MountJumpable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import mr.bashyal.chikemmod.registry.ModItems;
@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.item.ItemStack;
-import mr.bashyal.chikemmod.mixin.MixinPlayerEntity;
 
 public class MountableChickenEntity extends ChickenEntity {
     public enum SpecialAbility {
@@ -51,14 +50,18 @@ public class MountableChickenEntity extends ChickenEntity {
          super(type, world);
          this.goalSelector.add(1, new WanderAroundGoal(this, 1.0));
          this.goalSelector.add(2, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-         // Rare spawn logic: 1 in 612 chance (like pink sheep)
-         if (!world.isClient && random.nextInt(612) == 0) {
+         
+         // Rare spawn logic: 1 in 50 chance (2%) for testing
+         if (!world.isClient && random.nextInt(50) == 0) {
              String rareName = getRandomRareChickenName();
              if (rareName != null) {
                  this.setCustomName(Text.literal(rareName));
                  this.setCustomNameVisible(true);
                  this.isRareChicken = true;
                  this.specialAbility = getAbilityForName(rareName);
+                 
+                 // Log rare chicken spawn
+                 System.out.println("[ChickenMod] Spawned rare chicken: " + rareName);
              }
          }
      }
@@ -78,7 +81,15 @@ public class MountableChickenEntity extends ChickenEntity {
      }
 
      public boolean canBeRidden() {
-         return isRareChicken; // only rare chickens can be ridden
+         // Check if this is a rare chicken by name or ability
+         if (this.hasCustomName() && this.getCustomName() != null) {
+             String name = this.getCustomName().getString();
+             if (rareChickenAbilities != null && rareChickenAbilities.containsKey(name)) {
+                 this.isRareChicken = true;
+                 this.specialAbility = getAbilityForName(name);
+             }
+         }
+         return this.isRareChicken;
      }
 
      public void tick() {
@@ -279,6 +290,26 @@ public class MountableChickenEntity extends ChickenEntity {
 
      @Override
      public void travel(Vec3d movementInput) {
+         // Check if a player is holding food and we're not already mounted
+         if (!this.hasPassengers()) {
+             List<PlayerEntity> players = this.getWorld().getNonSpectatingEntities(PlayerEntity.class, 
+                 this.getBoundingBox().expand(8.0));
+             
+             for (PlayerEntity player : players) {
+                 ItemStack stack = player.getMainHandStack();
+                 if (stack.isEmpty()) stack = player.getOffHandStack();
+                 
+                 if (this.isBreedingItem(stack) || this.isSeed(stack)) {
+                     this.getLookControl().lookAt(player, 10.0F, (float)this.getMaxLookPitchChange());
+                     
+                     if (this.squaredDistanceTo(player) >= 2.25) { // 1.5 blocks squared
+                         this.getNavigation().startMovingTo(player, 1.0);
+                     }
+                     break;
+                 }
+             }
+         }
+         
          if (this.hasPassengers() && this.getFirstPassenger() instanceof LivingEntity rider) {
              // Step height is handled by the game's default behavior
              
@@ -299,8 +330,8 @@ public class MountableChickenEntity extends ChickenEntity {
 
              // Jump only when spacebar is pressed (using our mixin for jump detection)
              boolean shouldJump = false;
-             if (rider instanceof PlayerEntity) {
-                 shouldJump = ((MixinPlayerEntity) (Object) rider).shouldMountJump();
+             if (rider instanceof PlayerEntity && rider instanceof MountJumpable) {
+                 shouldJump = ((MountJumpable) rider).shouldMountJump();
              }
              if (this.isOnGround() && shouldJump && !this.isTouchingWater()) {
                  // Check in multiple directions for better edge detection
