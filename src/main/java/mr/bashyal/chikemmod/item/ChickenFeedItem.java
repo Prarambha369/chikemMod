@@ -71,9 +71,11 @@ public class ChickenFeedItem extends Item {
     }
 
     private boolean canFeedChicken(ChickenEntity chicken) {
-        NbtCompound nbt = chicken.writeNbt(new NbtCompound());
-        if (nbt.contains(LAST_FED_KEY)) {
-            long lastFed = nbt.getLong(LAST_FED_KEY);
+        NbtCompound entityNbt = new NbtCompound();
+        chicken.writeCustomDataToNbt(entityNbt);
+
+        if (entityNbt.contains(LAST_FED_KEY)) {
+            long lastFed = entityNbt.getLong(LAST_FED_KEY);
             long currentTime = chicken.getWorld().getTime();
             return (currentTime - lastFed) > 200; // 10 second cooldown
         }
@@ -81,18 +83,25 @@ public class ChickenFeedItem extends Item {
     }
 
     private void updateFeedingData(ChickenEntity chicken) {
-        NbtCompound nbt = chicken.writeNbt(new NbtCompound());
-        int feedCount = nbt.getInt(FEED_COUNT_KEY);
+        // Get current NBT data
+        NbtCompound entityNbt = new NbtCompound();
+        chicken.writeCustomDataToNbt(entityNbt);
+
+        // Update feed count and timestamp
+        int currentFeedCount = entityNbt.getInt(FEED_COUNT_KEY);
         long currentTime = chicken.getWorld().getTime();
 
-        nbt.putInt(FEED_COUNT_KEY, feedCount + 1);
-        nbt.putLong(LAST_FED_KEY, currentTime);
-        chicken.readNbt(nbt);
+        entityNbt.putInt(FEED_COUNT_KEY, currentFeedCount + 1);
+        entityNbt.putLong(LAST_FED_KEY, currentTime);
+
+        // Write data back to chicken
+        chicken.readCustomDataFromNbt(entityNbt);
     }
 
     private int getFeedCount(ChickenEntity chicken) {
-        NbtCompound nbt = chicken.writeNbt(new NbtCompound());
-        return nbt.getInt(FEED_COUNT_KEY);
+        NbtCompound entityNbt = new NbtCompound();
+        chicken.writeCustomDataToNbt(entityNbt);
+        return entityNbt.getInt(FEED_COUNT_KEY);
     }
 
     private void handleMountableChicken(MountableChickenEntity mountable, PlayerEntity user, World world) {
@@ -270,7 +279,7 @@ public class ChickenFeedItem extends Item {
                 user.sendMessage(Text.literal("🌟 This chicken is well-fed and healthy! (Fed " + feedCount + " times)")
                     .formatted(Formatting.GREEN), false);
             } else {
-                // Basic particles for newly fed chickens - using CRIT particles instead
+                // Basic particles for newly fed chickens
                 serverWorld.spawnParticles(ParticleTypes.CRIT,
                     chicken.getX(), chicken.getY() + 0.5, chicken.getZ(),
                     3, 0.2, 0.2, 0.2, 0.0);

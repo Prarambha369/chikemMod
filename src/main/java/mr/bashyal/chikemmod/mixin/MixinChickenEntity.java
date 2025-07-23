@@ -37,7 +37,7 @@ public abstract class MixinChickenEntity {
     }
 
     /**
-     * Enhanced breeding when using GolChick Food - higher chance of special offspring
+     * Enhanced breeding when using GolChick Food - small chance of special offspring
      */
     @Inject(method = "createChild", at = @At("HEAD"), cancellable = true)
     private void enhancedBreeding(ServerWorld world, PassiveEntity entity, CallbackInfoReturnable<PassiveEntity> cir) {
@@ -49,15 +49,17 @@ public abstract class MixinChickenEntity {
                                   otherChicken.hasStatusEffect(net.minecraft.entity.effect.StatusEffects.REGENERATION));
 
         if (premiumBreeding) {
-            // Higher chance to create a MountableChickenEntity instead of regular chicken
-            if (RANDOM.nextFloat() < 0.3f) { // 30% chance for premium breeding
+            // Small chance to create a MountableChickenEntity instead of regular chicken
+            // 85% chance for regular chicken, 15% chance for mountable chicken
+            if (RANDOM.nextFloat() < 0.15f) { // Reduced from 30% to 15%
                 MountableChickenEntity baby = new MountableChickenEntity(
                     (EntityType<? extends ChickenEntity>) ModEntities.MOUNTABLE_CHICKEN,
                     world
                 );
 
-                // Small chance for the baby to be born rare
-                if (RANDOM.nextFloat() < 0.1f) { // 10% chance
+                // Even smaller chance for the baby to be born rare
+                // Only 5% of mountable chickens (0.75% overall) will be rare
+                if (RANDOM.nextFloat() < 0.05f) { // Reduced from 10% to 5%
                     String[] rareNames = {"Wonder", "Miracle", "Blessed", "Divine", "Celestial"};
                     String rareName = rareNames[RANDOM.nextInt(rareNames.length)];
                     baby.setRareChicken(rareName);
@@ -67,7 +69,11 @@ public abstract class MixinChickenEntity {
                 baby.refreshPositionAndAngles(self.getX(), self.getY(), self.getZ(), 0.0F, 0.0F);
 
                 cir.setReturnValue(baby);
+                return;
             }
         }
+
+        // For all other cases (including non-premium breeding), create regular vanilla chickens
+        // This ensures 85% regular chickens even with GolChick Food, and 100% regular chickens with normal breeding
     }
 }

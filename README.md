@@ -5,7 +5,7 @@
 [![Fabric API](https://img.shields.io/badge/Fabric%20API-0.102.0+-blueviolet)](https://fabricmc.net)
 [![GitHub stars](https://img.shields.io/github/stars/Prarambha369/chikemMod?style=social)](https://github.com/Prarambha369/chikemMod/stargazers)
 
-> Transform your Minecraft experience with magical, mountable chickens and rare breeds with special abilities!
+> Transform your Minecraft experience with magical, mountable chickens and enhanced breeding mechanics!
 
 ## 📦 Download
 
@@ -16,111 +16,86 @@
 
 ---
 
-## 🚀 Features
+## 🚀 Current Features
 
 ### 🐓 Mountable Chickens
 - **Ride chickens** with intuitive WASD controls
-- **Smooth movement** and realistic animations
+- **Smooth movement** and realistic animations  
 - **Right-click mounting/dismounting** system
-- **Dash ability** for rare chickens (double-tap W)
 - **Jump mechanics** while mounted (Space key)
+- **Dismount with Left Shift**
 
-### 🍯 Enhanced Feeding System
-- **GolChick Food** - Premium nutrition for all chickens
-- **Smart breeding system** - Fed chickens enter love mode automatically
-- **Nutrition tracking** - Chickens remember their feeding history
+### 🍯 Enhanced Feeding & Breeding System
+- **GolChick Food** - Premium nutrition that works with vanilla breeding
+- **Smart breeding** - GolChick Food can be used alongside vanilla seeds for breeding
+- **Enhanced breeding chance** - 15% chance for special mountable chickens when using GolChick Food
+- **Rare transformations** - Well-fed mountable chickens have small chance (0.75%) to become rare
+- **Nutrition tracking** - Chickens remember feeding history with visual feedback
 - **Growth acceleration** - Baby chickens grow faster when well-fed
-- **10-second feeding cooldown** prevents overfeeding
+- **10-second feeding cooldown** prevents spam feeding
 
-### 🌟 Special Items
-- **GoldieEgg** - Throwable golden eggs that rare chickens can lay
-- **GolChick Food** - Essential for breeding and maintaining healthy chickens
+### 🌟 Items & Mechanics
+- **GoldieEgg** - Special throwable eggs (rare drop from special chickens)
+- **GolChick Food** - Essential breeding item that works with all chickens
+- **Breeding compatibility** - Regular vanilla chickens and special mountable chickens can both be bred with GolChick Food
+- **Particle effects** - Beautiful visual feedback for well-fed chickens
 
-### ⚡ Rare Chicken System
-- **Transformation chance** - Well-fed mountable chickens can become rare (15-35% chance)
-- **Special abilities** being developed for rare breeds
-- **Enhanced stats** and unique behaviors
-- **Golden particles** and visual effects for rare chickens
+### ⚡ Spawn Balance
+- **Regular chickens spawn naturally** - 85% of all chicken spawns are regular vanilla chickens
+- **Special chickens are rare** - Only 15% chance when breeding with GolChick Food
+- **Rare chickens are very rare** - Only 0.75% overall chance for rare abilities
 
 ## 🎮 Controls
 
 | Action | Control |
 |--------|---------|
-| Mount/Dismount | Right-click with empty hand |
-| Movement | WASD or Arrow Keys |
-| Jump (mounted) | Space |
-| Dash (rare chickens) | Double-tap W |
+| Mount Chicken | Right-click with empty hand |
 | Dismount | Left Shift |
+| Movement (mounted) | WASD or Arrow Keys |
+| Jump (mounted) | Space |
+| Feed Chicken | Right-click with GolChick Food |
 
-## 🍯 Feeding Guide
+### 🐔 Breeding Guide
+1. **Feed chickens** with GolChick Food to put them in breeding mode
+2. **Regular vanilla chickens** can breed normally (100% chance for vanilla babies)
+3. **Enhanced breeding** with GolChick Food gives 15% chance for mountable chicken babies
+4. **Multiple feedings** increase chances of rare transformations over time
+5. **Well-fed chickens** get regeneration and resistance effects
 
-### How to Use GolChick Food
-1. **Craft or obtain** GolChick Food
-2. **Right-click** on any chicken with the food
-3. **Watch the magic** - chickens get healthier and may enter breeding mode
-4. **Wait 10 seconds** between feedings (cooldown system)
+## 🛠️ Commands
+- `/chickem` - Spawn special mountable chickens with rare abilities (creative/admin only)
 
-### Benefits of Regular Feeding
-- **Health restoration** - +4.0 HP per feeding
-- **Breeding readiness** - Fed chickens automatically enter love mode
-- **Baby growth** - Accelerated growth for young chickens
-- **Rare transformation** - Mountable chickens may become rare breeds
-- **Special events** - Well-fed chickens may lay bonus eggs
-
-### Breeding System
-- **Primary function** - GolChick Food enables easy chicken breeding
-- **Love mode duration** - 30-60 seconds depending on nutrition level
-- **Nearby attraction** - Well-fed chickens attract other chickens for breeding
-- **Growth boost** - Baby chickens mature faster when fed regularly
-
-## 🛠️ Installation
+## 🚀 Installation
 
 ### Prerequisites
-- **Minecraft 1.21**
-- **Fabric Loader 0.14.0+**
-- **Fabric API 0.102.0+**
+- Minecraft 1.21
+- Fabric Loader 0.14.0+  
+- Fabric API 0.102.0+
 
 ### Steps
-1. Download the latest release from [Modrinth](https://modrinth.com/mod/chikem-mod)
+1. Download the latest release from [Modrinth](https://modrinth.com/project/chikem-mod)
 2. Place the `.jar` file in your Minecraft `mods` folder
 3. Launch Minecraft with Fabric Loader
 4. Enjoy enhanced chicken gameplay!
-
-## 🎯 Gameplay Tips
-
-### Getting Started
-1. **Find chickens** in your world
-2. **Craft GolChick Food** (recipe available in-game)
-3. **Feed chickens regularly** to unlock their potential
-4. **Right-click to mount** compatible chickens
-5. **Look for rare transformations** in well-fed mountable chickens
-
-### Advanced Strategies
-- **Nutrition tracking** - Keep feeding the same chickens for better results
-- **Breeding farms** - Use GolChick Food to maintain active breeding pairs
-- **Rare hunting** - Focus on feeding mountable chickens for transformation chances
-- **Special events** - Well-fed chickens (5+ feedings) may trigger bonus events
-
-## 🔮 Planned Features
-
-- **Multiple feed types** - Fertility Feed, Premium Feed, Mystic Feed
-- **More rare breeds** - Speed, Slow Fall, Lucky, and Dash chickens
-- **Enhanced abilities** - Unique powers for each rare breed
-- **Expanded trading** - Wandering trader integration
-- **Custom recipes** - More crafting options
 
 ## 🛠️ Development
 
 ### Project Structure
 ```
 src/main/java/mr/bashyal/chikemmod/
-├── Chickenmod.java           # Main mod entrypoint
-├── entity/                   # Custom entities (Golden Eggs, Mountable Chickens)
-├── item/                     # Custom items and food
-├── mixin/                    # Vanilla game integration
-├── registry/                 # Game object registration
-└── network/                  # Multiplayer support
+├── Chickenmod.java           # Main mod entrypoint  
+├── ChickenmodCommands.java   # /chickem command implementation
+├── entity/                   # MountableChickenEntity with rare abilities
+├── item/                     # GolChick Food and GoldieEgg items
+├── mixin/                    # Vanilla breeding integration
+└── registry/                 # Game object registration
 ```
+
+### Technical Details
+- **Fabric Loader**: 0.16.14
+- **Yarn Mappings**: 1.21+build.9
+- **Mod Version**: 1.1.0-SNAPSHOT
+- **Environment**: Client & Server compatible
 
 ### Building from Source
 ```bash
@@ -129,28 +104,64 @@ cd ChickenMod
 ./gradlew build
 ```
 
-### Contributing
-1. Fork the repository
-2. Create a feature branch
+## 🗺️ Roadmap (Planned Features)
+
+### 🌟 Upcoming Rare Chicken Breeds
+- [ ] **Speed Chickens** - 25% faster movement
+- [ ] **Slow Fall Chickens** - Reduced fall damage  
+- [ ] **Lucky Chickens** - 15% more drops
+- [ ] **Dash Chickens** - Special dash ability with double-tap forward
+
+### 🍯 Enhanced Feeding System (Planned)
+- [ ] **Fertility Feed** - Accelerates breeding and growth
+- [ ] **Premium Feed** - 30% chance for rare transformations
+- [ ] **Mystic Feed** - 50% chance for special abilities
+
+### 🔧 Technical Improvements
+- [ ] Enhanced AI behaviors for rare chickens
+- [ ] More particle effects and animations
+- [ ] Performance optimizations
+- [ ] Configuration options
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+### Getting Started
+1. Fork this repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
 4. Test thoroughly
-5. Submit a pull request
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-## 🤝 Support
+### Guidelines
+- Follow existing code style and conventions
+- Add tests for new features when possible
+- Update documentation for significant changes
+- Ensure compatibility with Minecraft 1.21 and Fabric API
+
+## 🐛 Issues & Support
 
 - **Bug Reports**: [GitHub Issues](https://github.com/Prarambha369/chikemMod/issues)
 - **Feature Requests**: [GitHub Discussions](https://github.com/Prarambha369/chikemMod/discussions)
-- **Questions**: Check existing issues first
+- **Questions**: Check existing issues or create a new one
 
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
 
-## 👥 Credits
+## 👥 Contributors
 
 - **[MrBashyal](https://github.com/Prarambha369)** - Project Creator & Lead Developer
-- **Fabric Team** - For the excellent modding framework
-- **Minecraft Community** - For inspiration and feedback
+- **Community Contributors** - Thank you to everyone who has contributed!
+
+## 🙏 Acknowledgments
+
+- Fabric development team for the excellent modding framework
+- Minecraft modding community for inspiration and support
+- Beta testers and community feedback
 
 ---
 
