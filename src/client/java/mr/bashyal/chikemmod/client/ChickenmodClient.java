@@ -1,6 +1,7 @@
 package mr.bashyal.chikemmod.client;
 
 import mr.bashyal.chikemmod.entity.MountableChickenEntity;
+import mr.bashyal.chikemmod.network.DashPayload;
 import mr.bashyal.chikemmod.registry.ModEntities;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -14,7 +15,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,18 +24,6 @@ import org.lwjgl.glfw.GLFW;
  */
 public class ChickenmodClient implements ClientModInitializer {
     public static KeyBinding dashKeyBinding;
-
-    /**
-     * Custom payload for the dash action, sent from client to server.
-     */
-    public static final class DashPayload implements CustomPayload {
-        public static final Identifier IDENTIFIER = Identifier.of("chikemmod", "dash");
-
-        @Override
-        public CustomPayload.Id getId() {
-            return new CustomPayload.Id(IDENTIFIER);
-        }
-    }
 
     /**
      * Initializes client-side features: renderers, key bindings, and event handlers.

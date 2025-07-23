@@ -3,6 +3,8 @@ package mr.bashyal.chikemmod.entity;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import mr.bashyal.chikemmod.registry.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
@@ -48,6 +50,8 @@ public class MountableChickenEntity extends ChickenEntity {
          super(type, world);
          this.goalSelector.add(1, new WanderAroundGoal(this, 1.0));
          this.goalSelector.add(2, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+         // Enable auto-step for smooth movement over blocks
+         this.setStepHeight(1.0F);
          // Rare spawn logic: 1 in 612 chance (like pink sheep)
          if (!world.isClient && random.nextInt(612) == 0) {
              String rareName = getRandomRareChickenName();
@@ -82,26 +86,29 @@ public class MountableChickenEntity extends ChickenEntity {
          super.tick();
          if (this.hasPassengers()) {
              if (!this.getWorld().isClient && this.getFirstPassenger() instanceof PlayerEntity rider) {
-                 if (rider.fallDistance > 2 && !this.isOnGround()) {
+                 // SLOW_FALL: Prevent fall damage and apply slow falling
+                 if (this.specialAbility == SpecialAbility.SLOW_FALL) {
+                     this.fallDistance = 0;
                      rider.fallDistance = 0;
-                     rider.setVelocity(rider.getVelocity().multiply(1, 0.6, 1));
-                     this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.0F, 1.0F);
+                     if (!rider.hasStatusEffect(StatusEffects.SLOW_FALLING)) {
+                         rider.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 10, 0, true, false));
+                     }
+                 }
+                 // LUCK: Apply Luck effect to rider
+                 if (this.specialAbility == SpecialAbility.LUCK) {
+                     if (!rider.hasStatusEffect(StatusEffects.LUCK)) {
+                         rider.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 20, 0, true, false));
+                     }
                  }
              }
          }
 
-         // Ability effects
-         if (this.hasPassengers() && this.isRareChicken && this.specialAbility != null && this.getFirstPassenger() instanceof PlayerEntity rider) {
+         // Apply speed ability effects
+         if (this.specialAbility == SpecialAbility.SPEED && this.hasPassengers() && this.getFirstPassenger() instanceof PlayerEntity) {
              var speedAttr = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-             switch (this.specialAbility) {
-                 case SPEED -> { if (speedAttr != null) speedAttr.setBaseValue(0.45D); }
-                 case DASH -> performDash();
-                 case SLOW_FALL -> { if (!rider.getWorld().isClient) rider.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 40, 0, true, false)); }
-                 case LUCK -> { if (!rider.getWorld().isClient) rider.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 40, 0, true, false)); }
+             if (speedAttr != null) {
+                 speedAttr.setBaseValue(0.25D); // Reset to default speed when not moving
              }
-         } else if (this.specialAbility == SpecialAbility.SPEED) {
-             var speedAttr = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
-             if (speedAttr != null) speedAttr.setBaseValue(0.25D);
          }
 
          // Egg laying logic
@@ -123,18 +130,6 @@ public class MountableChickenEntity extends ChickenEntity {
                              new net.minecraft.item.ItemStack(net.minecraft.item.Items.EGG)));
                  }
              }
-         }
-     }
-
-     public void performDash() {
-         if (this.hasPassengers() && this.isRareChicken && this.specialAbility == SpecialAbility.DASH) {
-             // Give a forward burst of speed
-             double dashStrength = 1.5D;
-             double dx = this.getRotationVector().x * dashStrength;
-             double dz = this.getRotationVector().z * dashStrength;
-             this.setVelocity(dx, 0.3, dz);
-             this.velocityDirty = true;
-             this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_CHICKEN_HURT, this.getSoundCategory(), 1.0F, 1.2F);
          }
      }
 
@@ -276,17 +271,67 @@ public class MountableChickenEntity extends ChickenEntity {
              this.setRotation(rider.getYaw(), rider.getPitch() * 0.5F);
              this.sidewaysSpeed = rider.sidewaysSpeed;
              this.forwardSpeed = rider.forwardSpeed <= 0.0F ? rider.forwardSpeed * 0.25F : rider.forwardSpeed;
-
-             // Handle jump input (movementInput.y > 0 indicates jump button)
-             if (movementInput.y > 0.0D && this.isOnGround()) {
-                 // Jump one block high
-                 double jumpStrength = Math.sqrt(0.16D);
-                 this.setVelocity(this.getVelocity().x, jumpStrength, this.getVelocity().z);
+             
+             // Apply speed boost only when player is actively moving (WASD pressed)
+             if (this.specialAbility == SpecialAbility.SPEED && 
+                 (Math.abs(rider.forwardSpeed) > 0.01F || Math.abs(rider.sidewaysSpeed) > 0.01F)) {
+                 var speedAttr = this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED);
+                 if (speedAttr != null) {
+                     speedAttr.setBaseValue(0.75D); // Base 0.25 + 0.5 speed boost
+                 }
                  this.velocityDirty = true;
              }
 
+             // Enhanced auto-jump when moving forward
+             if (this.isOnGround() && this.forwardSpeed > 0.1F && !this.isTouchingWater() && this.random.nextFloat() < 0.8F) {
+                 // Check in multiple directions for better edge detection
+                 Vec3d lookVec = this.getRotationVector();
+                 Vec3d sideVec = new Vec3d(-lookVec.z, 0, lookVec.x).normalize().multiply(0.5);
+                 
+                 // Check center and both sides for better edge detection
+                 BlockPos[] checkPositions = {
+                     this.getBlockPos().add(
+                         (int)Math.round(lookVec.x * 1.5), 
+                         0, 
+                         (int)Math.round(lookVec.z * 1.5)
+                     ), // Center
+                     this.getBlockPos().add(
+                         (int)Math.round((lookVec.x * 1.5) + sideVec.x), 
+                         0, 
+                         (int)Math.round((lookVec.z * 1.5) + sideVec.z)
+                     ), // Right side
+                     this.getBlockPos().add(
+                         (int)Math.round((lookVec.x * 1.5) - sideVec.x), 
+                         0, 
+                         (int)Math.round((lookVec.z * 1.5) - sideVec.z)
+                     )  // Left side
+                 };
+                 
+                 for (BlockPos checkPos : checkPositions) {
+                     BlockPos groundPos = checkPos.down();
+                     
+                     // If we find a block to jump over, jump and break
+                     if (!this.getWorld().isAir(groundPos) && 
+                         this.getWorld().isAir(checkPos) && 
+                         this.getWorld().isAir(checkPos.up())) {
+                         
+                         // Slightly higher jump for better clearance
+                         this.setVelocity(this.getVelocity().x, 0.42F * 1.2, this.getVelocity().z);
+                         this.velocityDirty = true;
+                         
+                         // Play jump sound
+                         if (!this.isSilent()) {
+                             this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), 
+                                 SoundEvents.ENTITY_CHICKEN_STEP, this.getSoundCategory(), 
+                                 0.15F, 1.5F);
+                         }
+                         break;
+                     }
+                 }
+             }
+
              // Delegate movement
-             super.travel(new Vec3d(this.sidewaysSpeed, 0.0D, this.forwardSpeed));
+             super.travel(new Vec3d(this.sidewaysSpeed, movementInput.y, this.forwardSpeed));
          } else {
              super.travel(movementInput);
          }

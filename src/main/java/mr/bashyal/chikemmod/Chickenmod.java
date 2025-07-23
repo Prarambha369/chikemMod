@@ -1,12 +1,12 @@
 package mr.bashyal.chikemmod;
 
-import mr.bashyal.chikemmod.network.DashPayload;
 import mr.bashyal.chikemmod.registry.ModEffects;
 import mr.bashyal.chikemmod.registry.ModEntities;
 import mr.bashyal.chikemmod.registry.ModEntityAttributes;
 import mr.bashyal.chikemmod.registry.ModItems;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.network.PacketByteBuf;
@@ -19,7 +19,6 @@ import net.minecraft.village.TradeOffers;
  * - Uses Fabric API v2+ for commands and networking
  * - Registers rare/mountable chickens, golden eggs, and GolChickFood
  * - Adds /chickem command for spawning rare chickens
- * - Handles dash ability via custom payload
  * 
  * @author Prarambha369
  */
@@ -36,16 +35,6 @@ public class Chickenmod implements ModInitializer {
         // Register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             ChickenmodCommands.register(dispatcher);
-        });
-
-        // Register the DashPayload type for networking (serverbound)
-        ServerPlayNetworking.registerGlobalReceiver(DashPayload.ID, (server, player, handler, buf, responseSender) -> {
-            // Manually decode DashPayload (no data)
-            if (player.hasVehicle() && player.getVehicle() instanceof mr.bashyal.chikemmod.entity.MountableChickenEntity chicken) {
-                if (chicken.isRareChicken() && chicken.getSpecialAbility() == mr.bashyal.chikemmod.entity.MountableChickenEntity.SpecialAbility.DASH) {
-                    chicken.performDash();
-                }
-            }
         });
 
         // Add GolChick Food to wandering trader trades (Fabric 1.21+ API)
