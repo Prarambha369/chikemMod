@@ -20,7 +20,7 @@
 
 ### 🐓 Mountable Chickens
 - **Ride chickens** with intuitive WASD controls
-- **Smooth movement** and realistic animations  
+- **Smooth movement** and realistic animations
 - **Right-click mounting/dismounting** system
 - **Jump mechanics** while mounted (Space key)
 - **Dismount with Left Shift**
@@ -69,7 +69,7 @@
 
 ### Prerequisites
 - Minecraft 1.21
-- Fabric Loader 0.14.0+  
+- Fabric Loader 0.14.0+
 - Fabric API 0.102.0+
 
 ### Steps
@@ -108,7 +108,7 @@ cd ChickenMod
 
 ### 🌟 Upcoming Rare Chicken Breeds
 - [ ] **Speed Chickens** - 25% faster movement
-- [ ] **Slow Fall Chickens** - Reduced fall damage  
+- [ ] **Slow Fall Chickens** - Reduced fall damage
 - [ ] **Lucky Chickens** - 15% more drops
 - [ ] **Dash Chickens** - Special dash ability with double-tap forward
 
