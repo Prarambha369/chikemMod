@@ -1,136 +1,170 @@
-# ChickemMod
+# ChickemMod 🐔
 
-![CHICKEMMOD.png](src/main/resources/assets/CHICKEMMOD.png)
-![License](https://img.shields.io/badge/license-MIT-purple)   ![Hackatime Badge](https://hackatime-badge.hackclub.com/U0894AG5K1C/ChickenMod/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21-green)](https://minecraft.net)
+[![Fabric API](https://img.shields.io/badge/Fabric%20API-0.102.0+-blueviolet)](https://fabricmc.net)
+[![GitHub stars](https://img.shields.io/github/stars/Prarambha369/chikemMod?style=social)](https://github.com/Prarambha369/chikemMod/stargazers)
 
-> Chikem Mod Yummy !!
+> Transform your Minecraft experience with magical, mountable chickens and enhanced breeding mechanics!
 
-## About ChickemMod
+## 📦 Download
 
-ChickemMod is a modification designed to enhance Minecraft gameplay by introducing unique features and abilities related to chickens. From rare chicken breeds with special powers to customizable chicken behaviors, this mod adds an exciting layer of complexity and fun to the game.
+[![Modrinth Downloads](https://img.shields.io/modrinth/dt/chikem-mod?color=00AF5C&label=Downloads&logo=modrinth&style=for-the-badge)](https://modrinth.com/mod/chikem-mod)
+[![Modrinth Version](https://img.shields.io/modrinth/v/chikem-mod?color=00AF5C&label=Latest%20Version&logo=modrinth&style=for-the-badge)](https://modrinth.com/mod/chikem-mod/versions)
 
-## Features
+**[📥 Download from Modrinth](https://modrinth.com/mod/chikem-mod/versions)**
 
-- **Rare chicken breeds** with unique abilities (`SPEED`, `DASH`, `SLOW_FALL`, `LUCK`)
-- **Customizable chicken behaviors** and spawn rates via JSON resources
-- **Integration** with core Minecraft gameplay mechanics
-- **New items and foods** related to chickens, including golden eggs and GolChick Food
-- **Custom wandering trader trades** for chicken-related items
-- **Configurable breeding mechanics** for chickens
-- **Client features**: custom entity renderers, key binding for dash ability (default: `J`)
+---
 
-## Download
+## 🚀 Current Features
 
-**📥 Get ChickemMod:**
-- [Download from Modrinth](https://modrinth.com/mod/chikem-mod) (Recommended)
+### 🐓 Mountable Chickens
+- **Ride chickens** with intuitive WASD controls
+- **Smooth movement** and realistic animations
+- **Right-click mounting/dismounting** system
+- **Jump mechanics** while mounted (Space key)
+- **Dismount with Left Shift**
 
-## Dependencies
+### 🍯 Enhanced Feeding & Breeding System
+- **GolChick Food** - Premium nutrition that works with vanilla breeding
+- **Smart breeding** - GolChick Food can be used alongside vanilla seeds for breeding
+- **Enhanced breeding chance** - 15% chance for special mountable chickens when using GolChick Food
+- **Rare transformations** - Well-fed mountable chickens have small chance (0.75%) to become rare
+- **Nutrition tracking** - Chickens remember feeding history with visual feedback
+- **Growth acceleration** - Baby chickens grow faster when well-fed
+- **10-second feeding cooldown** prevents spam feeding
 
-**Required:**
-- [Fabric Loader](https://fabricmc.net/use/installer/) (latest version)
-- [Fabric API](https://modrinth.com/mod/fabric-api) (compatible with Minecraft 1.21)
+### 🌟 Items & Mechanics
+- **GoldieEgg** - Special throwable eggs (rare drop from special chickens)
+- **GolChick Food** - Essential breeding item that works with all chickens
+- **Breeding compatibility** - Regular vanilla chickens and special mountable chickens can both be bred with GolChick Food
+- **Particle effects** - Beautiful visual feedback for well-fed chickens
 
-**Note:** The mod will not start without Fabric API installed. Make sure to download it alongside the mod.
+### ⚡ Spawn Balance
+- **Regular chickens spawn naturally** - 85% of all chicken spawns are regular vanilla chickens
+- **Special chickens are rare** - Only 15% chance when breeding with GolChick Food
+- **Rare chickens are very rare** - Only 0.75% overall chance for rare abilities
 
-## Installation Steps
+## 🎮 Controls
 
-1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 1.21
-2. Download [Fabric API](https://modrinth.com/mod/fabric-api) for Minecraft 1.21
-3. Download ChickemMod from [Modrinth](https://modrinth.com/project/chikem-mod)
-4. Place both `.jar` files (Fabric API and ChickemMod) into your Minecraft `mods` folder
-5. Launch the game with the Fabric profile
+| Action | Control |
+|--------|---------|
+| Mount Chicken | Right-click with empty hand |
+| Dismount | Left Shift |
+| Movement (mounted) | WASD or Arrow Keys |
+| Jump (mounted) | Space |
+| Feed Chicken | Right-click with GolChick Food |
 
-## How to Use
+### 🐔 Breeding Guide
+1. **Feed chickens** with GolChick Food to put them in breeding mode
+2. **Regular vanilla chickens** can breed normally (100% chance for vanilla babies)
+3. **Enhanced breeding** with GolChick Food gives 15% chance for mountable chicken babies
+4. **Multiple feedings** increase chances of rare transformations over time
+5. **Well-fed chickens** get regeneration and resistance effects
 
-### Getting Started
-- Once installed, chickens will naturally spawn with special abilities
-- Look for chickens with different visual indicators or behaviors
-- Use the `J` key (default) to activate dash ability when near special chickens
+## 🛠️ Commands
+- `/chickem` - Spawn special mountable chickens with rare abilities (creative/admin only)
 
-### Special Chicken Types
-- **Speed Chickens**: Move faster than normal chickens
-- **Dash Chickens**: Can perform quick dash movements (activate with `J` key)
-- **Slow Fall Chickens**: Fall slowly and take no fall damage
-- **Luck Chickens**: Provide luck effects to nearby players
+## 🚀 Installation
 
-### Special Items
-- **Golden Eggs**: Rare drops from special chickens with enhanced properties
-- **GolChick Food**: Special chicken feed that can influence breeding outcomes
-- **Trader Items**: Visit wandering traders for exclusive chicken-related goods
-
-### Breeding
-- Use GolChick Food to breed chickens with higher chances of special abilities
-- Experiment with different combinations to discover new chicken types
-- Check JSON configuration files to customize spawn rates and behaviors
-
-## Configuration
-
-The mod supports JSON-based configuration for:
-- Chicken spawn rates
-- Ability probabilities
-- Custom behaviors
-- Breeding mechanics
-
-Configuration files can be found in your `.minecraft/config` folder after first launch.
-
-## Technologies Used
-
-- Fabric Mod Loader
-- Java 17+
+### Prerequisites
 - Minecraft 1.21
-- Fabric API
+- Fabric Loader 0.14.0+
+- Fabric API 0.102.0+
 
-## Installation Requirements
+### Steps
+1. Download the latest release from [Modrinth](https://modrinth.com/project/chikem-mod)
+2. Place the `.jar` file in your Minecraft `mods` folder
+3. Launch Minecraft with Fabric Loader
+4. Enjoy enhanced chicken gameplay!
 
-- **Minecraft Version**: 1.21
-- **Mod Loader**: Fabric Loader (latest)
-- **Java Version**: 17 or higher
-- **Required Dependencies**: Fabric API
+## 🛠️ Development
 
-## Development
+### Project Structure
+```
+src/main/java/mr/bashyal/chikemmod/
+├── Chickenmod.java           # Main mod entrypoint  
+├── ChickenmodCommands.java   # /chickem command implementation
+├── entity/                   # MountableChickenEntity with rare abilities
+├── item/                     # GolChick Food and GoldieEgg items
+├── mixin/                    # Vanilla breeding integration
+└── registry/                 # Game object registration
+```
+
+### Technical Details
+- **Fabric Loader**: 0.16.14
+- **Yarn Mappings**: 1.21+build.9
+- **Mod Version**: 1.1.0-SNAPSHOT
+- **Environment**: Client & Server compatible
 
 ### Building from Source
 ```bash
 git clone https://github.com/Prarambha369/chikemMod.git
-cd chikemMod
+cd ChickenMod
 ./gradlew build
 ```
 
-### Project Structure
-```
-src/
-├── main/
-│   ├── java/          # Java source code
-│   └── resources/     # Assets and data files
-└── test/              # Unit tests
-```
+## 🗺️ Roadmap (Planned Features)
 
-## Contribution Guidelines
+### 🌟 Upcoming Rare Chicken Breeds
+- [ ] **Speed Chickens** - 25% faster movement
+- [ ] **Slow Fall Chickens** - Reduced fall damage
+- [ ] **Lucky Chickens** - 15% more drops
+- [ ] **Dash Chickens** - Special dash ability with double-tap forward
 
-This project is open source, and contributions are welcome!
+### 🍯 Enhanced Feeding System (Planned)
+- [ ] **Fertility Feed** - Accelerates breeding and growth
+- [ ] **Premium Feed** - 30% chance for rare transformations
+- [ ] **Mystic Feed** - 50% chance for special abilities
 
-- Fork the repository on GitHub
-- Create a new branch for your changes
-- Submit a pull request with a detailed description of your changes
-- Report bugs or suggest features by opening an issue on the [GitHub repository](https://github.com/Prarambha369/chikemMod)
+### 🔧 Technical Improvements
+- [ ] Enhanced AI behaviors for rare chickens
+- [ ] More particle effects and animations
+- [ ] Performance optimizations
+- [ ] Configuration options
 
-## License
+## 🤝 Contributing
 
-This project is licensed under the [MIT License](LICENSE.txt).
+We welcome contributions! Here's how you can help:
 
-## Support
+### Getting Started
+1. Fork this repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Test thoroughly
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
-If you like this project, consider supporting its development by:
-- Following the repository
-- Starring it on GitHub
-- Making a donation to [NextEra-Development](https://github.com/NextEra-Development)
-- Reporting bugs and suggesting features
+### Guidelines
+- Follow existing code style and conventions
+- Add tests for new features when possible
+- Update documentation for significant changes
+- Ensure compatibility with Minecraft 1.21 and Fabric API
 
-## Troubleshooting
+## 🐛 Issues & Support
 
-**Common Issues:**
-- **Game won't start**: Make sure Fabric API is installed alongside the mod
-- **No special chickens spawning**: Check configuration files and ensure proper installation
-- **Dash ability not working**: Verify key binding in controls settings (default: `J`)
+- **Bug Reports**: [GitHub Issues](https://github.com/Prarambha369/chikemMod/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/Prarambha369/chikemMod/discussions)
+- **Questions**: Check existing issues or create a new one
 
-For more help, please open an issue on the GitHub repository.
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
+
+## 👥 Contributors
+
+- **[MrBashyal](https://github.com/Prarambha369)** - Project Creator & Lead Developer
+- **Community Contributors** - Thank you to everyone who has contributed!
+
+## 🙏 Acknowledgments
+
+- Fabric development team for the excellent modding framework
+- Minecraft modding community for inspiration and support
+- Beta testers and community feedback
+
+---
+
+**Made with ❤️ for the Minecraft community**
+
+> 🐔 **"Because every chicken deserves to be rideable!"** - MrBashyal

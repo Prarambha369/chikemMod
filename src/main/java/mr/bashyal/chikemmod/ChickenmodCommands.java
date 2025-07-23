@@ -12,7 +12,14 @@ import net.minecraft.util.math.BlockPos;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
+/**
+ * Registers and handles the /chickem command, allowing users to spawn rare chickens with optional abilities.
+ */
 public class ChickenmodCommands {
+    /**
+     * Registers the /chickem command, allowing users to spawn rare chickens with optional abilities.
+     * Uses Brigadier command API (Fabric v2+).
+     */
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(literal("chickem")
                 .requires(source -> source.hasPermissionLevel(0))
@@ -32,6 +39,11 @@ public class ChickenmodCommands {
         );
     }
 
+    /**
+     * Spawns a rare mountable chicken at the player's location.
+     * If an ability is specified, assigns it; otherwise, assigns a random rare name and ability.
+     * Uses reflection to access rare chicken names/abilities for flexibility, but should be avoided if possible for future-proofing.
+     */
     private static int spawnChicken(ServerCommandSource source, String abilityArg) {
         var player = source.getPlayer();
         var world = source.getWorld();
@@ -49,23 +61,16 @@ public class ChickenmodCommands {
 
         if (abilityArg != null) {
             try {
-                SpecialAbility requestedAbility = SpecialAbility.valueOf(abilityArg.toUpperCase());
-                // Find a chicken name with this ability
-                chicken.setRareChicken(findChickenNameForAbility(requestedAbility));
-
-                // Use the final requestedAbility variable in the lambda
-                final SpecialAbility finalAbility = requestedAbility;
-                source.sendFeedback(() -> Text.literal("Spawned a rare chicken with " + finalAbility.name() + " ability!"), false);
+                SpecialAbility ability = SpecialAbility.valueOf(abilityArg.toUpperCase());
+                String rareName = findChickenNameForAbility(ability);
+                chicken.setRareChicken(rareName);
+                source.sendFeedback(() -> Text.literal("Spawned rare chicken with ability: " + ability), false);
             } catch (IllegalArgumentException e) {
                 source.sendError(Text.literal("Invalid ability: " + abilityArg));
                 return 0;
             }
         } else {
-            // Default behavior (always make it rare)
-            String rareName = MountableChickenEntity.getRandomRareChickenName();
-            if (rareName != null) {
-                chicken.setRareChicken(rareName);
-            }
+            chicken.setRareChicken(MountableChickenEntity.getRandomRareChickenName());
             source.sendFeedback(() -> Text.literal("Spawned a rare chicken!"), false);
         }
 
@@ -73,37 +78,22 @@ public class ChickenmodCommands {
         return 1;
     }
 
+    /**
+     * Finds a rare chicken name associated with the given ability.
+     * Instead of using reflection, this now directly reads from the static mapping in MountableChickenEntity.
+     * Returns a random rare chicken name if no match is found.
+     */
     private static String findChickenNameForAbility(SpecialAbility ability) {
-        // First, attempt to access the ability-to-name mapping if possible
-        try {
-            // Try to get reflection access to the internal map in MountableChickenEntity
-            java.lang.reflect.Field field = MountableChickenEntity.class.getDeclaredField("rareChickenAbilities");
-            field.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            java.util.Map<String, SpecialAbility> abilityMap =
-                    (java.util.Map<String, SpecialAbility>) field.get(null);
-
-            if (abilityMap != null) {
-                // Find all chicken names that have the requested ability
-                java.util.List<String> matchingChickens = new java.util.ArrayList<>();
-
-                for (java.util.Map.Entry<String, SpecialAbility> entry : abilityMap.entrySet()) {
-                    if (entry.getValue() == ability) {
-                        matchingChickens.add(entry.getKey());
-                    }
-                }
-
-                // If we found any matches, return a random one
-                if (!matchingChickens.isEmpty()) {
-                    return matchingChickens.get(new java.util.Random().nextInt(matchingChickens.size()));
+        // Directly access the rareChickenAbilities mapping if possible
+        java.util.Map<String, SpecialAbility> abilityMap = mr.bashyal.chikemmod.entity.MountableChickenEntity.getRareChickenAbilities();
+        if (abilityMap != null) {
+            for (var entry : abilityMap.entrySet()) {
+                if (entry.getValue() == ability) {
+                    return entry.getKey();
                 }
             }
-        } catch (Exception e) {
-            // If reflection access fails, fall back to returning a random name
-            System.err.println("[ChickenMod] Couldn't access ability mapping: " + e.getMessage());
         }
-
-        // If no mapping exists or no match was found, return a random name as fallback
-        return MountableChickenEntity.getRandomRareChickenName();
+        // Fallback: return a random rare name
+        return mr.bashyal.chikemmod.entity.MountableChickenEntity.getRandomRareChickenName();
     }
 }

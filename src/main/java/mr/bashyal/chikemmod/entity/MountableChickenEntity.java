@@ -227,6 +227,17 @@ public class MountableChickenEntity extends ChickenEntity {
          }
      }
 
+     /**
+     * Returns the rare chicken ability mapping (name -> ability).
+     * Used by commands and logic to avoid reflection.
+     */
+    public static java.util.Map<String, SpecialAbility> getRareChickenAbilities() {
+        if (rareChickenAbilities == null) {
+            rareChickenAbilities = loadRareChickenAbilities();
+        }
+        return rareChickenAbilities;
+    }
+
      @Override
      public ActionResult interactMob(PlayerEntity player, Hand hand) {
          ItemStack stack = player.getStackInHand(hand);
