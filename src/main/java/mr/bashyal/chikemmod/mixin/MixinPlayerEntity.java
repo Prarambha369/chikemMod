@@ -1,5 +1,6 @@
 package mr.bashyal.chikemmod.mixin;
 
+import mr.bashyal.chikemmod.interfaces.MountJumpable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -9,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
-public abstract class MixinPlayerEntity {
+public abstract class MixinPlayerEntity implements MountJumpable {
     @Shadow public abstract boolean isSpectator();
     @Shadow public abstract boolean isCreative();
     @Shadow public abstract Vec3d getVelocity();
@@ -33,6 +34,7 @@ public abstract class MixinPlayerEntity {
         wasJumping = isJumping;
     }
     
+    @Override
     public boolean shouldMountJump() {
         return shouldMountJump;
     }
