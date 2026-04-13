@@ -1,0 +1,13 @@
+{
+  "item.chikem-mod.golchick_food": "GolChick Food",
+  "item.chikem-mod.goldie_egg": "Goldie Egg",
+  "entity.chikem-mod.mountable_chicken": "Special Chickem",
+  "key.chikem-mod.dash": "Dash (on chicken)",
+  "category.chikem-mod": "ChikemMod",
+  "item.chikem-mod.golchick_food.tooltip.ability": "Feed to two chickens before breeding to roll a Special Chickem.",
+  "item.chikem-mod.golchick_food.tooltip.spawn_rates": "Spawn chance: Peaceful 30% | Easy 24% | Normal 18% | Hard 14% | Hardcore 12%",
+  "item.chikem-mod.golchick_food.tooltip.loot_sources": "Treasure sources: structure chests 35%, fishing treasure 8%.",
+  "item.chikem-mod.goldie_egg.tooltip.ability": "Throwable special egg item.",
+  "item.chikem-mod.goldie_egg.tooltip.loot_rates": "Treasure chance: structure chests 12% | fishing treasure 3%",
+  "item.chikem-mod.goldie_egg.tooltip.loot_sources": "Found in dungeons, temples, strongholds, ancient cities, end cities, bastions."
+}

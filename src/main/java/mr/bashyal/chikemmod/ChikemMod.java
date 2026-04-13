@@ -1,0 +1,49 @@
+package mr.bashyal.chikemmod;
+
+import mr.bashyal.chikemmod.network.ModNetworking;
+import mr.bashyal.chikemmod.registry.ModEntities;
+import mr.bashyal.chikemmod.registry.ModItems;
+import mr.bashyal.chikemmod.world.ModLootInjector;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.village.TradeOffer;
+import net.minecraft.village.TradedItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class ChikemMod implements ModInitializer {
+    public static final String MOD_ID = "chikem-mod";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+    @Override
+    public void onInitialize() {
+        LOGGER.info("Initializing ChikemMod v1.1.0");
+
+        ModItems.initialize();
+        ModEntities.initialize();
+        ModNetworking.initialize();
+        ModLootInjector.initialize();
+        ChikemmodCommands.register();
+        registerTrades();
+
+        LOGGER.info("ChikemMod initialized successfully!");
+    }
+
+    private void registerTrades() {
+        TradeOfferHelper.registerWanderingTraderOffers(1, factories -> {
+            factories.add((entity, random) -> new TradeOffer(
+                new TradedItem(Items.EMERALD, 3),
+                new ItemStack(ModItems.GOLCHICK_FOOD, 1),
+                12, 5, 0.05f
+            ));
+            
+            factories.add((entity, random) -> new TradeOffer(
+                new TradedItem(Items.EMERALD, 8),
+                new ItemStack(ModItems.GOLDIE_EGG, 1),
+                3, 10, 0.1f
+            ));
+        });
+    }
+}
