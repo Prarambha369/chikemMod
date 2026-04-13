@@ -38,3 +38,7 @@ rebel.xml
 *.hprof
 
 *.zip
+
+# Local release docs not intended for repository
+MODRINTH_DESCRIPTION.md
+VERIFICATION_CHECKLIST.md

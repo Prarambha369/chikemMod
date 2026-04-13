@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "chikem-mod",
   "version": "${version}",
-  "name": "ChikemMod",
+  "name": "Chikem Mod",
   "description": "Adds Special Chickems, difficulty-based breeding chances, and treasure loot for GolChick Food + Goldie Egg.",
   "authors": [
     "Prarambha369"

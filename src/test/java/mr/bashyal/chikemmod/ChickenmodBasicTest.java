@@ -15,7 +15,7 @@ public class ChickenmodBasicTest {
 
     @Test
     public void testVersionSemverLike() {
-        String version = "1.1.0";
+        String version = "1.4.0";
         assertTrue(version.matches("\\d+\\.\\d+\\.\\d+"));
     }
 

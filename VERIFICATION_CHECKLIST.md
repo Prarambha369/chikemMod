@@ -1,4 +1,4 @@
-# ChikemMod Verification Checklist
+# Chikem Mod Verification Checklist
 
 Complete this checklist before releasing any version to ensure quality and functionality.
 
@@ -7,7 +7,7 @@ Complete this checklist before releasing any version to ensure quality and funct
 - [x] `build.gradle` configured for Java 17
 - [x] Fabric Loader version set to 0.16.14
 - [x] Yarn Mappings set to 1.21+build.9
-- [x] Mod version updated to 1.1.0
+- [x] Mod version updated to 1.4.0
 - [x] Archive base name matches mod ID (`chikem-mod`)
 - [x] `gradle.properties` contains all required properties
 - [x] `settings.gradle` project name matches mod ID
@@ -104,7 +104,7 @@ Complete this checklist before releasing any version to ensure quality and funct
 
 ## ✅ Final Checks
 
-- [ ] Version tag created (`v1.1.0`)
+- [ ] Version tag created (`v1.4.0`)
 - [ ] GitHub release created
 - [ ] Release notes are complete
 - [ ] Download links work
@@ -130,4 +130,4 @@ Complete this checklist before releasing any version to ensure quality and funct
 
 **Last Updated:** 2026-04-13
 **Verified By:** _____________
-**Version:** 1.1.0
+**Version:** 1.4.0

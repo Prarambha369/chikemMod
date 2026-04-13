@@ -1,4 +1,4 @@
-# ChikemMod
+# Chikem Mod
 
 A comprehensive Fabric mod for Minecraft 1.21 that enhances your gameplay experience with custom features and mechanics.
 
@@ -21,7 +21,7 @@ A comprehensive Fabric mod for Minecraft 1.21 that enhances your gameplay experi
 
 1. Install [Fabric Loader](https://fabricmc.net/use/) for Minecraft 1.21
 2. Download Fabric API from [Modrinth](https://modrinth.com/mod/fabric-api) or [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
-3. Download ChikemMod from this page
+3. Download Chikem Mod from this page
 4. Place both JAR files in your `.minecraft/mods` folder
 5. Launch Minecraft with the Fabric profile
 

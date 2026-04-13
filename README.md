@@ -1,4 +1,4 @@
-# ChikemMod
+# Chikem Mod
 
 [![GitHub Release](https://img.shields.io/github/v/release/Prarambha369/chikemMod?style=flat-square)](https://github.com/Prarambha369/chikemMod/releases)
 [![GitHub Issues](https://img.shields.io/github/issues/Prarambha369/chikemMod?style=flat-square)](https://github.com/Prarambha369/chikemMod/issues)
@@ -49,7 +49,7 @@ Before building or using this mod, ensure you have:
    ```
    (On Windows, use `gradlew.bat build`)
 
-3. The compiled mod will be in `build/libs/chikem-mod-1.1.0.jar`
+3. The compiled mod will be in `build/libs/chikem-mod-1.4.0.jar`
 
 ## Development Setup
 
@@ -86,7 +86,7 @@ chikem-mod/
 
 ### Release Build
 ```bash
-./gradlew build -Pversion=1.1.0
+./gradlew build -Pmod_version=1.4.0
 ```
 
 The compiled JAR will be located in `build/libs/`.
@@ -118,7 +118,7 @@ Included structure chest pools: simple dungeon, abandoned mineshaft, desert pyra
 
 ## Changelog
 
-### Version 1.1.0 (Current)
+### Version 1.4.0 (Current)
 - Updated to Minecraft 1.21
 - Updated Fabric Loader to 0.16.14
 - Updated Yarn Mappings to 1.21+build.9
