@@ -44,8 +44,8 @@ public class GoldieEggItem extends Item {
 
     @Override
     public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type) {
-        tooltip.add(Text.translatable("item.chikem-mod.goldie_egg.tooltip.ability").formatted(Formatting.GRAY));
-        tooltip.add(Text.translatable("item.chikem-mod.goldie_egg.tooltip.loot_rates").formatted(Formatting.GOLD));
-        tooltip.add(Text.translatable("item.chikem-mod.goldie_egg.tooltip.loot_sources").formatted(Formatting.DARK_AQUA));
+        tooltip.add(Text.literal("Throwable special egg item.").formatted(Formatting.GRAY));
+        tooltip.add(Text.literal("Treasure chance: structure chests 12% | fishing treasure 3%").formatted(Formatting.GOLD));
+        tooltip.add(Text.literal("Found in dungeons, temples, strongholds, ancient cities, end cities, bastions.").formatted(Formatting.DARK_AQUA));
     }
 }

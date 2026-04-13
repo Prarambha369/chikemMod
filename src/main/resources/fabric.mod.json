@@ -1,39 +1,39 @@
 {
   "schemaVersion": 1,
-  "id": "chikemmod",
-  "version": "1.21",
-  "name": "ChickemMod",
-  "description": "chickem mod yummy",
+  "id": "chikem-mod",
+  "version": "${version}",
+  "name": "ChikemMod",
+  "description": "Adds Special Chickems, difficulty-based breeding chances, and treasure loot for GolChick Food + Goldie Egg.",
   "authors": [
-    "MrBashyal"
+    "Prarambha369"
   ],
   "contact": {
-    "email": "prarambhabashyal@gmail.com"
+    "homepage": "https://github.com/Prarambha369/chikemMod",
+    "sources": "https://github.com/Prarambha369/chikemMod",
+    "issues": "https://github.com/Prarambha369/chikemMod/issues"
   },
   "license": "MIT",
   "icon": "assets/CHICKEMMOD.png",
-  "environment": "client",
+  "environment": "*",
   "entrypoints": {
-    "fabric-datagen": [
-      "mr.bashyal.chikemmod.client.ChickenmodDataGenerator"
+    "main": [
+      "mr.bashyal.chikemmod.ChikemMod"
     ],
     "client": [
       "mr.bashyal.chikemmod.client.ChickenmodClient"
-    ],
-    "main": [
-      "mr.bashyal.chikemmod.Chickenmod"
     ]
   },
   "mixins": [
-    "chikemmod.mixins.json",
+    "chikem-mod.mixins.json",
     {
       "config": "chikemmod.client.mixins.json",
       "environment": "client"
     }
   ],
   "depends": {
-    "fabricloader": ">=0.14.0",
-    "fabric": "*",
-    "minecraft": "1.21"
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.21",
+    "java": ">=21",
+    "fabric-api": "*"
   }
 }

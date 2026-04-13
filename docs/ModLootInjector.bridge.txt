@@ -1,0 +1,3 @@
+Bridge note: `mr.bashyal.chikemmod.ModLootInjector` was moved out of source because the
+real implementation lives in `mr.bashyal.chikemmod.world.ModLootInjector`.
+

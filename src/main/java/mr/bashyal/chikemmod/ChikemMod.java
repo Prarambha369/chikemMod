@@ -3,7 +3,6 @@ package mr.bashyal.chikemmod;
 import mr.bashyal.chikemmod.network.ModNetworking;
 import mr.bashyal.chikemmod.registry.ModEntities;
 import mr.bashyal.chikemmod.registry.ModItems;
-import mr.bashyal.chikemmod.world.ModLootInjector;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,7 @@ public class ChikemMod implements ModInitializer {
         ModItems.initialize();
         ModEntities.initialize();
         ModNetworking.initialize();
-        ModLootInjector.initialize();
+        mr.bashyal.chikemmod.world.ModLootInjector.initialize();
         ChikemmodCommands.register();
         registerTrades();
 

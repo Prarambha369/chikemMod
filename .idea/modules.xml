@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ChickenMod.client.iml" filepath="$PROJECT_DIR$/.idea/modules/ChickenMod.client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ChickenMod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ChickenMod.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chikemMod.client.iml" filepath="$PROJECT_DIR$/.idea/modules/chikemMod.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chikem-mod.client.iml" filepath="$PROJECT_DIR$/.idea/modules/chikem-mod.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chikem-mod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/chikem-mod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chikem-mod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/chikem-mod.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/chikemMod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/chikemMod.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chikemMod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/chikemMod.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mr.bashyal.ChickenMod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mr.bashyal.ChickenMod.main.iml" />
     </modules>
   </component>
 </project>
