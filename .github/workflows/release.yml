@@ -1,21 +1,28 @@
-name: Release Build
+name: Release
 
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to publish'
+        required: false
+        type: string
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -27,22 +34,93 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew --no-daemon clean build
+      - name: Build remapped release JAR
+        run: ./gradlew --no-daemon clean remapJar
 
-      - name: Extract Version
+      - name: Prepare Release Metadata
         id: extract_version
-        run: echo "VERSION=$(grep 'mod_version=' gradle.properties | cut -d'=' -f2)" >> $GITHUB_OUTPUT
+        shell: bash
+        run: |
+          MOD_VERSION="$(grep '^mod_version=' gradle.properties | cut -d'=' -f2)"
+          ARCHIVE_NAME="$(grep '^archives_base_name=' gradle.properties | cut -d'=' -f2)"
+          MINECRAFT_VERSION="$(grep '^minecraft_version=' gradle.properties | cut -d'=' -f2)"
+          LOADER_VERSION="$(grep '^loader_version=' gradle.properties | cut -d'=' -f2)"
+          FABRIC_API_VERSION="$(grep '^fabric_version=' gradle.properties | cut -d'=' -f2)"
+
+          TAG_NAME="${{ github.event.inputs.tag_name }}"
+          if [[ -z "$TAG_NAME" ]]; then
+            TAG_NAME="${GITHUB_REF_NAME}"
+          fi
+          if [[ -z "$TAG_NAME" ]]; then
+            TAG_NAME="v${MOD_VERSION}"
+          fi
+
+          EXPECTED_TAG="v${MOD_VERSION}"
+          if [[ "$TAG_NAME" != "$EXPECTED_TAG" ]]; then
+            echo "Tag/version mismatch: expected '${EXPECTED_TAG}', got '${TAG_NAME}'."
+            exit 1
+          fi
+
+          REMAPPED_JAR="build/libs/${ARCHIVE_NAME}-${MOD_VERSION}.jar"
+          if [[ ! -f "$REMAPPED_JAR" ]]; then
+            echo "Expected remapped jar not found: ${REMAPPED_JAR}"
+            echo "Available files in build/libs:"
+            ls -la build/libs || true
+            exit 1
+          fi
+
+          mkdir -p dist
+          cp "$REMAPPED_JAR" "dist/${ARCHIVE_NAME}-${MOD_VERSION}.jar"
+
+          MOD_DESCRIPTION="$(python - <<'PY'
+import json
+from pathlib import Path
+
+data = json.loads(Path('src/main/resources/fabric.mod.json').read_text(encoding='utf-8'))
+print(data.get('description', 'A Fabric mod release.'))
+PY
+          )"
+
+          cat > release-notes.md <<EOF
+# Chikem Mod ${TAG_NAME}
+
+${MOD_DESCRIPTION}
+
+## Compatibility
+- Minecraft: ${MINECRAFT_VERSION}
+- Fabric Loader: ${LOADER_VERSION}+
+- Fabric API: ${FABRIC_API_VERSION}
+- Java: 21+
+
+## Download
+- `$ARCHIVE_NAME-$MOD_VERSION.jar`
+
+## Installation
+1. Install Fabric Loader.
+2. Install Fabric API.
+3. Put the downloaded JAR into your `.minecraft/mods` folder.
+4. Launch Minecraft with the Fabric profile.
+
+## Links
+- Source: https://github.com/${{ github.repository }}
+- Issues: https://github.com/${{ github.repository }}/issues
+EOF
+
+          {
+            echo "VERSION=$MOD_VERSION"
+            echo "TAG_NAME=$TAG_NAME"
+            echo "JAR_PATH=dist/${ARCHIVE_NAME}-${MOD_VERSION}.jar"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: build/libs/*.jar
+          tag_name: ${{ steps.extract_version.outputs.TAG_NAME }}
+          name: Chikem Mod v${{ steps.extract_version.outputs.VERSION }}
+          body_path: release-notes.md
+          files: ${{ steps.extract_version.outputs.JAR_PATH }}
           draft: false
           prerelease: false
-          generate_release_notes: true
-          name: Chikem Mod v${{ steps.extract_version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -50,4 +128,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: chikem-mod-${{ steps.extract_version.outputs.VERSION }}
-          path: build/libs/*.jar
+          path: ${{ steps.extract_version.outputs.JAR_PATH }}
+          if-no-files-found: error

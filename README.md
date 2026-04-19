@@ -5,7 +5,7 @@
 [![GitHub License](https://img.shields.io/github/license/Prarambha369/chikemMod?style=flat-square)](LICENSE)
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/chikem-mod?style=flat-square&logo=modrinth)](https://modrinth.com/mod/chikem-mod)
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21-green?style=flat-square)](https://www.minecraft.net/)
-[![Fabric](https://img.shields.io/badge/Fabric-0.16.14-blue?style=flat-square)](https://fabricmc.net/)
+[![Fabric Loader](https://img.shields.io/badge/Fabric%20Loader-0.17.3%2B-blue?style=flat-square)](https://fabricmc.net/use/)
 
 A comprehensive Fabric mod for Minecraft 1.21 that enhances gameplay with custom features and mechanics.
 
@@ -23,15 +23,15 @@ Before building or using this mod, ensure you have:
 
 - **Java 21** or higher installed ([Download](https://adoptium.net/))
 - **Minecraft 1.21** (Java Edition)
-- **Fabric Loader 0.16.0** or higher ([Installation Guide](https://fabricmc.net/use/))
-- **Fabric API** (automatically bundled)
+- **Fabric Loader 0.17.3** or higher ([Installation Guide](https://fabricmc.net/use/))
+- **Fabric API** (installed separately, or resolved automatically by Modrinth)
 
 ## Installation
 
 ### For Players
 
-1. Install [Fabric Loader](https://fabricmc.net/use/) for Minecraft 1.21
-2. Download the latest release from [Releases](https://github.com/Prarambha369/chikemMod/releases) or [Modrinth](https://modrinth.com/mod/chikem-mod)
+1. Install [Fabric Loader](https://fabricmc.net/use/) for Minecraft 1.21.11
+2. Download the latest release from [Releases](https://github.com/Prarambha369/chikemMod/releases) or [Modrinth](https://modrinth.com/mod/chikem-mod) — Modrinth can resolve Fabric API for you
 3. Place the `.jar` file in your `.minecraft/mods` folder
 4. Launch Minecraft with the Fabric profile
 
@@ -49,7 +49,7 @@ Before building or using this mod, ensure you have:
    ```
    (On Windows, use `gradlew.bat build`)
 
-3. The compiled mod will be in `build/libs/chikem-mod-1.4.0.jar`
+3. The compiled mod will be in `build/libs/chikem-mod-<version>.jar`
 
 ## Development Setup
 
@@ -86,10 +86,28 @@ chikem-mod/
 
 ### Release Build
 ```bash
-./gradlew build -Pmod_version=1.4.0
+./gradlew clean remapJar
 ```
 
-The compiled JAR will be located in `build/libs/`.
+The release-ready remapped JAR will be located in `build/libs/` as `chikem-mod-<version>.jar`.
+
+## Automated GitHub Releases
+
+The release workflow in `.github/workflows/release.yml` is tag-driven and publishes one clean mod JAR.
+
+1. Update `mod_version` in `gradle.properties`.
+2. Commit and push your changes.
+3. Create and push a matching tag (`v<mod_version>`), for example:
+
+```bash
+git tag v1.4.0
+git push origin v1.4.0
+```
+
+The workflow will:
+- run `remapJar`
+- publish `chikem-mod-<version>.jar` as the release asset
+- generate concise release notes from project metadata
 
 ## Configuration
 
