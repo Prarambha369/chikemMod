@@ -36,7 +36,7 @@ jobs:
 
       - name: 'Qodana Scan (PR)'
         if: ${{ github.event_name == 'pull_request' && steps.token_check.outputs.has_token == 'true' }}
-        uses: JetBrains/qodana-action@v2026.1
+        uses: JetBrains/qodana-action@v2025.3.2
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
         with:
@@ -52,7 +52,7 @@ jobs:
 
       - name: 'Qodana Scan (Push/Manual)'
         if: ${{ github.event_name != 'pull_request' && steps.token_check.outputs.has_token == 'true' }}
-        uses: JetBrains/qodana-action@v2026.1
+        uses: JetBrains/qodana-action@v2025.3.2
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
         with:
