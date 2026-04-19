@@ -74,7 +74,42 @@ jobs:
 
           export TAG_NAME MOD_VERSION ARCHIVE_NAME MINECRAFT_VERSION LOADER_VERSION FABRIC_API_VERSION
 
-          python -c 'import json, pathlib, os; data=json.loads(pathlib.Path("src/main/resources/fabric.mod.json").read_text(encoding="utf-8")); description=data.get("description", "A Fabric mod release."); notes="# Chikem Mod " + os.environ["TAG_NAME"] + "\n\n" + description + "\n\n## Compatibility\n- Minecraft: " + os.environ["MINECRAFT_VERSION"] + "\n- Fabric Loader: " + os.environ["LOADER_VERSION"] + "+\n- Fabric API: " + os.environ["FABRIC_API_VERSION"] + "\n- Java: 21+\n\n## Download\n- `" + os.environ["ARCHIVE_NAME"] + "-" + os.environ["MOD_VERSION"] + ".jar`\n\n## Installation\n1. Install Fabric Loader.\n2. Install Fabric API.\n3. Put the downloaded JAR into your `.minecraft/mods` folder.\n4. Launch Minecraft with the Fabric profile.\n\n## Links\n- Source: https://github.com/" + os.environ["GITHUB_REPOSITORY"] + "\n- Issues: https://github.com/" + os.environ["GITHUB_REPOSITORY"] + "/issues\n"; pathlib.Path("release-notes.md").write_text(notes, encoding="utf-8")'
+          python <<'PY'
+          import json
+          import os
+          import pathlib
+
+          data = json.loads(
+              pathlib.Path("src/main/resources/fabric.mod.json").read_text(encoding="utf-8")
+          )
+          description = data.get("description", "A Fabric mod release.")
+
+          notes = f"""# Chikem Mod {os.environ['TAG_NAME']}
+
+          {description}
+
+          ## Compatibility
+          - Minecraft: {os.environ['MINECRAFT_VERSION']}
+          - Fabric Loader: {os.environ['LOADER_VERSION']}+
+          - Fabric API: {os.environ['FABRIC_API_VERSION']}
+          - Java: 21+
+
+          ## Download
+          - `{os.environ['ARCHIVE_NAME']}-{os.environ['MOD_VERSION']}.jar`
+
+          ## Installation
+          1. Install Fabric Loader.
+          2. Install Fabric API.
+          3. Put the downloaded JAR into your `.minecraft/mods` folder.
+          4. Launch Minecraft with the Fabric profile.
+
+          ## Links
+          - Source: https://github.com/{os.environ['GITHUB_REPOSITORY']}
+          - Issues: https://github.com/{os.environ['GITHUB_REPOSITORY']}/issues
+          """
+
+          pathlib.Path("release-notes.md").write_text(notes, encoding="utf-8")
+          PY
 
           {
             echo "VERSION=$MOD_VERSION"

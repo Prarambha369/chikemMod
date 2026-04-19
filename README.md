@@ -6,7 +6,7 @@
 [![GitHub License](https://img.shields.io/github/license/Prarambha369/chikemMod?style=flat-square)](LICENSE)
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/chikem-mod?style=flat-square&logo=modrinth)](https://modrinth.com/mod/chikem-mod)
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21-green?style=flat-square)](https://www.minecraft.net/)
-[![Fabric Loader](https://img.shields.io/badge/Fabric%20Loader-0.18.1%2B-blue?style=flat-square)](https://fabricmc.net/use/)
+[![Fabric Loader](https://img.shields.io/badge/Fabric%20Loader-0.17.3%2B-blue?style=flat-square)](https://fabricmc.net/use/)
 [![Fabric API](https://img.shields.io/badge/Dependency-Fabric%20API-orange.svg)](https://modrinth.com/mod/fabric-api)
 [![Support](https://img.shields.io/badge/Support-Sponsor-ff69b4.svg?logo=githubsponsors)](https://github.com/sponsors/Prarambha369)
 
@@ -29,7 +29,7 @@ Before building or using this mod, ensure you have:
 
 - **Java 21** or higher installed ([Download](https://adoptium.net/))
 - **Minecraft 1.21** (Java Edition)
-- **Fabric Loader 0.18.1** or higher ([Installation Guide](https://fabricmc.net/use/))
+- **Fabric Loader 0.17.3** or higher ([Installation Guide](https://fabricmc.net/use/))
 - **Fabric API** (installed separately, or resolved automatically by Modrinth)
 
 ## Installation
@@ -144,7 +144,7 @@ Included structure chest pools: simple dungeon, abandoned mineshaft, desert pyra
 
 ### Version 1.4.1 (Current)
 - Updated to Minecraft 1.21.11
-- Updated Fabric Loader requirement to 0.18.1+
+- Updated Fabric Loader requirement to 0.17.3+
 - Updated Yarn mappings to 1.21.11+build.1
 - Improved build configuration
 - Enhanced project structure
