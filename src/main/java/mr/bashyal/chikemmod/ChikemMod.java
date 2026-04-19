@@ -18,7 +18,7 @@ public class ChikemMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        LOGGER.info("Initializing Chikem Mod v1.4.0");
+        LOGGER.info("Initializing Chikem Mod v1.4.1");
 
         ModItems.initialize();
         ModEntities.initialize();

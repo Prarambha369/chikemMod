@@ -106,8 +106,8 @@ The release workflow in `.github/workflows/release.yml` is tag-driven and publis
 3. Create and push a matching tag (`v<mod_version>`), for example:
 
 ```bash
-git tag v1.4.0
-git push origin v1.4.0
+git tag v1.4.1
+git push origin v1.4.1
 ```
 
 The workflow will:
