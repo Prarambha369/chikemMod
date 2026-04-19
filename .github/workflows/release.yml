@@ -72,39 +72,9 @@ jobs:
           mkdir -p dist
           cp "$REMAPPED_JAR" "dist/${ARCHIVE_NAME}-${MOD_VERSION}.jar"
 
-          MOD_DESCRIPTION="$(python - <<'PY'
-import json
-from pathlib import Path
+          export TAG_NAME MOD_VERSION ARCHIVE_NAME MINECRAFT_VERSION LOADER_VERSION FABRIC_API_VERSION
 
-data = json.loads(Path('src/main/resources/fabric.mod.json').read_text(encoding='utf-8'))
-print(data.get('description', 'A Fabric mod release.'))
-PY
-          )"
-
-          cat > release-notes.md <<EOF
-# Chikem Mod ${TAG_NAME}
-
-${MOD_DESCRIPTION}
-
-## Compatibility
-- Minecraft: ${MINECRAFT_VERSION}
-- Fabric Loader: ${LOADER_VERSION}+
-- Fabric API: ${FABRIC_API_VERSION}
-- Java: 21+
-
-## Download
-- `$ARCHIVE_NAME-$MOD_VERSION.jar`
-
-## Installation
-1. Install Fabric Loader.
-2. Install Fabric API.
-3. Put the downloaded JAR into your `.minecraft/mods` folder.
-4. Launch Minecraft with the Fabric profile.
-
-## Links
-- Source: https://github.com/${{ github.repository }}
-- Issues: https://github.com/${{ github.repository }}/issues
-EOF
+          python -c 'import json, pathlib, os; data=json.loads(pathlib.Path("src/main/resources/fabric.mod.json").read_text(encoding="utf-8")); description=data.get("description", "A Fabric mod release."); notes=f"# Chikem Mod {os.environ[\"TAG_NAME\"]}\n\n{description}\n\n## Compatibility\n- Minecraft: {os.environ[\"MINECRAFT_VERSION\"]}\n- Fabric Loader: {os.environ[\"LOADER_VERSION\"]}+\n- Fabric API: {os.environ[\"FABRIC_API_VERSION\"]}\n- Java: 21+\n\n## Download\n- `{os.environ[\"ARCHIVE_NAME\"]}-{os.environ[\"MOD_VERSION\"]}.jar`\n\n## Installation\n1. Install Fabric Loader.\n2. Install Fabric API.\n3. Put the downloaded JAR into your `.minecraft/mods` folder.\n4. Launch Minecraft with the Fabric profile.\n\n## Links\n- Source: https://github.com/${{ github.repository }}\n- Issues: https://github.com/${{ github.repository }}/issues\n"; pathlib.Path("release-notes.md").write_text(notes, encoding="utf-8")'
 
           {
             echo "VERSION=$MOD_VERSION"
