@@ -23,7 +23,7 @@ public class ChikemmodCommands {
 
     private static void registerChickemCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("chickem")
-            .requires(source -> source.hasPermissionLevel(2))
+            .requires(source -> true)
             .executes(ChikemmodCommands::executeChickem));
     }
 
@@ -32,13 +32,13 @@ public class ChikemmodCommands {
         
         try {
             ServerPlayerEntity player = source.getPlayerOrThrow();
-            MountableChickenEntity chicken = new MountableChickenEntity(player.getWorld());
-            
+            MountableChickenEntity chicken = new MountableChickenEntity(player.getEntityWorld());
+
             String randomType = SPECIAL_TYPES[RANDOM.nextInt(SPECIAL_TYPES.length)];
             chicken.setChickenType(randomType);
             chicken.refreshPositionAndAngles(player.getX(), player.getY(), player.getZ(), player.getYaw(), 0.0F);
             
-            player.getWorld().spawnEntity(chicken);
+            player.getEntityWorld().spawnEntity(chicken);
             player.sendMessage(Text.literal("§aSpawned a " + randomType + " chicken!"), false);
             
             return 1;

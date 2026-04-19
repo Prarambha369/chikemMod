@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class ChikemmodClient implements ClientModInitializer {
@@ -18,7 +19,7 @@ public class ChikemmodClient implements ClientModInitializer {
             "key.chikem-mod.dash",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_J,
-            "category.chikem-mod"
+            KeyBinding.Category.create(Identifier.of("chikem-mod", "keybindings"))
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {

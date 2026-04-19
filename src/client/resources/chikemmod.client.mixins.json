@@ -5,8 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "JvmFlagsMixin",
-    "NarratorManagerMixin",
-    "ShaderProgramMixin"
+    "NarratorManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

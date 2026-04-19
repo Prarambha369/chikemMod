@@ -31,14 +31,16 @@ public class ChikemMod implements ModInitializer {
     }
 
     private void registerTrades() {
-        TradeOfferHelper.registerWanderingTraderOffers(1, factories -> {
-            factories.add((entity, random) -> new TradeOffer(
+        TradeOfferHelper.registerWanderingTraderOffers(builder -> {
+            builder.addOffersToPool(TradeOfferHelper.WanderingTraderOffersBuilder.SELL_SPECIAL_ITEMS_POOL,
+                (world, entity, random) -> new TradeOffer(
                 new TradedItem(Items.EMERALD, 3),
                 new ItemStack(ModItems.GOLCHICK_FOOD, 1),
                 12, 5, 0.05f
             ));
             
-            factories.add((entity, random) -> new TradeOffer(
+            builder.addOffersToPool(TradeOfferHelper.WanderingTraderOffersBuilder.SELL_SPECIAL_ITEMS_POOL,
+                (world, entity, random) -> new TradeOffer(
                 new TradedItem(Items.EMERALD, 8),
                 new ItemStack(ModItems.GOLDIE_EGG, 1),
                 3, 10, 0.1f

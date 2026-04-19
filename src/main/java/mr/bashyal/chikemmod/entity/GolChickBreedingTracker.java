@@ -15,7 +15,7 @@ public final class GolChickBreedingTracker {
     }
 
     public static void markFed(ChickenEntity chicken) {
-        FED_CHICKENS.put(chicken.getUuid(), chicken.getWorld().getTime());
+        FED_CHICKENS.put(chicken.getUuid(), chicken.getEntityWorld().getTime());
     }
 
     public static boolean wasRecentlyFed(ChickenEntity chicken) {
@@ -24,7 +24,7 @@ public final class GolChickBreedingTracker {
             return false;
         }
 
-        long age = chicken.getWorld().getTime() - fedTick;
+        long age = chicken.getEntityWorld().getTime() - fedTick;
         if (age < 0 || age > FEED_WINDOW_TICKS) {
             FED_CHICKENS.remove(chicken.getUuid());
             return false;

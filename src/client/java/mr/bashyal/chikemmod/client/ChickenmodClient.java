@@ -12,7 +12,6 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.render.entity.ChickenEntityRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -32,18 +31,12 @@ public class ChickenmodClient implements ClientModInitializer {
                 "key.chikem-mod.dash",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_J,
-                "category.chikem-mod"
+                KeyBinding.Category.create(Identifier.of("chikem-mod", "keybindings"))
         ));
 
         // Register mountable chicken renderer
         EntityRendererRegistry.register(ModEntities.MOUNTABLE_CHICKEN,
-                context -> new ChickenEntityRenderer(context) {
-                    @Override
-                    public Identifier getTexture(ChickenEntity entity) {
-                        // Always use the mountable chicken texture
-                        return Identifier.of("chikem-mod", "textures/entity/mountable_chicken.png");
-                    }
-                }
+                ChickenEntityRenderer::new
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
