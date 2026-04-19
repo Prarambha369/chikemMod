@@ -1,13 +1,22 @@
-# Chikem Mod
-
+<div align="center">  
+   
+![Chikem Mod Banner](https://github.com/Prarambha369/chikemMod/blob/main/src/main/resources/assets/CHICKEMMOD.png?raw=true)   
 [![GitHub Release](https://img.shields.io/github/v/release/Prarambha369/chikemMod?style=flat-square)](https://github.com/Prarambha369/chikemMod/releases)
 [![GitHub Issues](https://img.shields.io/github/issues/Prarambha369/chikemMod?style=flat-square)](https://github.com/Prarambha369/chikemMod/issues)
 [![GitHub License](https://img.shields.io/github/license/Prarambha369/chikemMod?style=flat-square)](LICENSE)
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/chikem-mod?style=flat-square&logo=modrinth)](https://modrinth.com/mod/chikem-mod)
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21-green?style=flat-square)](https://www.minecraft.net/)
+<<<<<<< HEAD
 [![Fabric Loader](https://img.shields.io/badge/Fabric%20Loader-0.17.3%2B-blue?style=flat-square)](https://fabricmc.net/use/)
+=======
+[![Fabric API](https://img.shields.io/badge/Dependency-Fabric%20API-orange.svg)](https://modrinth.com/mod/fabric-api)
+[![Support](https://img.shields.io/badge/Support-Sponsor-ff69b4.svg?logo=githubsponsors)](https://github.com/sponsors/Prarambha369)
+>>>>>>> 76a778eb3ece5d8f78dfde97f94c75b7b0c39c13
 
 A comprehensive Fabric mod for Minecraft 1.21 that enhances gameplay with custom features and mechanics.
+</div>
+
+---
 
 ## Features
 
