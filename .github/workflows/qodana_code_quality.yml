@@ -23,8 +23,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check QODANA_TOKEN availability
+        id: token_check
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        run: |
+          if [ -n "$QODANA_TOKEN" ]; then
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: 'Qodana Scan (PR)'
-        if: ${{ github.event_name == 'pull_request' && secrets.QODANA_TOKEN != '' }}
+        if: ${{ github.event_name == 'pull_request' && steps.token_check.outputs.has_token == 'true' }}
         uses: JetBrains/qodana-action@v2026.1
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
@@ -40,7 +51,7 @@ jobs:
           push-fixes: 'none'
 
       - name: 'Qodana Scan (Push/Manual)'
-        if: ${{ github.event_name != 'pull_request' && secrets.QODANA_TOKEN != '' }}
+        if: ${{ github.event_name != 'pull_request' && steps.token_check.outputs.has_token == 'true' }}
         uses: JetBrains/qodana-action@v2026.1
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
@@ -53,5 +64,5 @@ jobs:
           push-fixes: 'none'
 
       - name: 'Skip notice (missing QODANA_TOKEN)'
-        if: ${{ secrets.QODANA_TOKEN == '' }}
+        if: ${{ steps.token_check.outputs.has_token != 'true' }}
         run: echo "QODANA_TOKEN is not set; skipping Qodana scan."
