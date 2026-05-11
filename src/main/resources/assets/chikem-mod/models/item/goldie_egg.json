@@ -1,7 +1,7 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
+  "gui_light": "front",
   "textures": {
     "layer0": "chikem-mod:item/goldie_egg"
   }
 }
-
