@@ -3,15 +3,14 @@ package mr.bashyal.chikemmod.registry;
 import mr.bashyal.chikemmod.ChikemMod;
 import mr.bashyal.chikemmod.item.GolChickFoodItem;
 import mr.bashyal.chikemmod.item.GoldieEggItem;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 import java.util.function.Function;
 
@@ -23,21 +22,21 @@ public class ModItems {
 
     public static final Item GOLDIE_EGG = registerItem(
         "goldie_egg",
-        settings -> new GoldieEggItem(settings.maxCount(16).rarity(Rarity.RARE))
+        settings -> new GoldieEggItem(settings.stacksTo(16).rarity(Rarity.RARE))
     );
 
-    private static Item registerItem(String name, Function<Item.Settings, Item> itemFactory) {
-        Identifier itemId = Identifier.of(ChikemMod.MOD_ID, name);
-        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, itemId);
-        Item.Settings settings = new Item.Settings().registryKey(itemKey);
+    private static Item registerItem(String name, Function<Item.Properties, Item> itemFactory) {
+        Identifier itemId = Identifier.fromNamespaceAndPath(ChikemMod.MOD_ID, name);
+        Item.Properties settings = new Item.Properties()
+                .setId(ResourceKey.create(BuiltInRegistries.ITEM.key(), itemId));
         Item item = itemFactory.apply(settings);
-        return Registry.register(Registries.ITEM, itemId, item);
+        return Registry.register(BuiltInRegistries.ITEM, itemId, item);
     }
 
     public static void initialize() {
         ChikemMod.LOGGER.info("Registering items for " + ChikemMod.MOD_ID);
 
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(entries -> entries.add(GOLCHICK_FOOD));
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register(entries -> entries.add(GOLDIE_EGG));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FOOD_AND_DRINKS).register(entries -> entries.accept(GOLCHICK_FOOD));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(entries -> entries.accept(GOLDIE_EGG));
     }
 }

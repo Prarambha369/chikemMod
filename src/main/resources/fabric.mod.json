@@ -24,16 +24,12 @@
     ]
   },
   "mixins": [
-    "chikem-mod.mixins.json",
-    {
-      "config": "chikemmod.client.mixins.json",
-      "environment": "client"
-    }
+    "chikem-mod.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.17.3",
-    "minecraft": "~1.21.11",
-    "java": ">=21",
-    "fabric-api": "*"
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": ">=0.165.2+26.3"
   }
 }

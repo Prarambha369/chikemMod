@@ -1,170 +1,220 @@
 package mr.bashyal.chikemmod.entity;
 
 import mr.bashyal.chikemmod.registry.ModEntities;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.passive.ChickenEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.Vec3;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
-
-public class MountableChickenEntity extends ChickenEntity {
-    public enum SpecialAbility {
-        NORMAL,
-        SPEED,
-        DASH,
-        SLOW_FALL,
-        LUCK
-    }
-
-    private static final Map<String, SpecialAbility> RARE_CHICKEN_ABILITIES = Map.ofEntries(
-            Map.entry("Swiftwing", SpecialAbility.SPEED),
-            Map.entry("Dashclaw", SpecialAbility.DASH),
-            Map.entry("Featherfall", SpecialAbility.SLOW_FALL),
-            Map.entry("Lucky Beak", SpecialAbility.LUCK)
-    );
+public class MountableChickenEntity extends Chicken {
+    private static final EntityDataAccessor<String> CHICKEN_TYPE_DATA = SynchedEntityData.defineId(MountableChickenEntity.class, EntityDataSerializers.STRING);
 
     private static final String CHICKEN_TYPE_KEY = "ChickenType";
-    private String chickenType = "NORMAL";
     private int dashCooldown = 0;
     private int luckEffectTimer = 0;
+    private boolean dashSlowdown = false;
 
-    public MountableChickenEntity(EntityType<? extends MountableChickenEntity> entityType, World world) {
-        super(entityType, world);
+    public MountableChickenEntity(EntityType<? extends MountableChickenEntity> entityType, Level level) {
+        super(entityType, level);
     }
 
-    public MountableChickenEntity(World world) {
-        this(ModEntities.MOUNTABLE_CHICKEN, world);
-    }
-
-    @Override
-    protected void writeCustomData(WriteView view) {
-        super.writeCustomData(view);
-        view.putString(CHICKEN_TYPE_KEY, this.chickenType);
+    public MountableChickenEntity(Level level) {
+        this(ModEntities.MOUNTABLE_CHICKEN, level);
     }
 
     @Override
-    protected void readCustomData(ReadView view) {
-        super.readCustomData(view);
-        this.chickenType = view.getString(CHICKEN_TYPE_KEY, "NORMAL");
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CHICKEN_TYPE_DATA, "NORMAL");
     }
 
-    public String getChickenType() {
-        return this.chickenType;
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putString(CHICKEN_TYPE_KEY, getChickenType());
     }
 
-    public void setChickenType(String type) {
-        this.chickenType = type;
+    @Override
+    protected void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        setChickenType(input.getStringOr(CHICKEN_TYPE_KEY, "NORMAL"));
         applyTypeAttributes();
     }
 
-    public static Map<String, SpecialAbility> getRareChickenAbilities() {
-        return new LinkedHashMap<>(RARE_CHICKEN_ABILITIES);
+    public String getChickenType() {
+        return this.entityData.get(CHICKEN_TYPE_DATA);
     }
 
-    public static String getRandomRareChickenName() {
-        var names = RARE_CHICKEN_ABILITIES.keySet().toArray(String[]::new);
-        return names[ThreadLocalRandom.current().nextInt(names.length)];
+    public void setChickenType(String type) {
+        this.entityData.set(CHICKEN_TYPE_DATA, type == null ? "NORMAL" : type);
+        applyTypeAttributes();
+    }
+
+    public ChickenIdentity getIdentity() {
+        return ChickenIdentity.byTypeKey(getChickenType());
+    }
+
+    /** Apply display custom name = random pool name + type title (Task 4 naming). Visible above head. */
+    public void applyIdentityDisplayName() {
+        ChickenIdentity identity = ChickenIdentity.byTypeKey(getChickenType());
+        if (identity == null) {
+            return;
+        }
+        setCustomName(Component.literal(ChickenIdentity.randomName()).append(" ").append(Component.translatable(identity.titleKey())));
+        setCustomNameVisible(true);
     }
 
     private void applyTypeAttributes() {
-        if ("SPEED".equals(chickenType)) {
-            this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(0.3125);
+        String type = getChickenType();
+        AttributeInstance speed = this.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speed != null) {
+            if ("SPEED".equals(type)) {
+                speed.setBaseValue(0.3125);
+            } else if ("SLOW_FALL".equals(type)) {
+                speed.setBaseValue(0.15);
+            } else {
+                // Reset base speed for non-matching types (vanilla chicken base).
+                speed.setBaseValue(0.25);
+            }
+        }
+        AttributeInstance health = this.getAttribute(Attributes.MAX_HEALTH);
+        if (health != null) {
+            if ("SPEED".equals(type)) {
+                health.setBaseValue(2.0);
+            } else {
+                // Reset base health for non-matching types (vanilla chicken: 4.0).
+                health.setBaseValue(4.0);
+            }
         }
     }
 
     @Override
-    public ActionResult interactMob(PlayerEntity player, Hand hand) {
-        if (player.getStackInHand(hand).isEmpty() && !player.hasVehicle()) {
-            if (!this.getEntityWorld().isClient()) {
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 pos) {
+        // Sneak + right-click: read this chickem's backstory into chat (no mounting).
+        if (player.isCrouching() && !this.level().isClientSide()) {
+            var identity = getIdentity();
+            if (identity != null) {
+                player.sendSystemMessage(Component.literal(identity.individualName()
+                        + " \u2014 " + identity.title()));
+                player.sendSystemMessage(Component.literal(identity.backstory()));
+            }
+            return InteractionResult.SUCCESS;
+        }
+        // Only mount when unoccupied.
+        if (player.getItemInHand(hand).isEmpty() && !player.isPassenger() && getControllingPassenger() == null && getFirstPassenger() == null) {
+            if (!this.level().isClientSide()) {
                 player.startRiding(this);
             }
-            return ActionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return super.interactMob(player, hand);
+        return InteractionResult.PASS;
     }
 
     public boolean canBeControlledByRider() {
-        return this.getFirstPassenger() instanceof PlayerEntity;
+        return this.getControllingPassenger() != null;
     }
 
     @Override
-    public void travel(Vec3d movementInput) {
-        if (this.hasPassengers() && this.canBeControlledByRider()) {
-            LivingEntity rider = (LivingEntity) this.getFirstPassenger();
-            this.setYaw(rider.getYaw());
-            this.setPitch(rider.getPitch() * 0.5F);
-            this.setRotation(this.getYaw(), this.getPitch());
-            this.bodyYaw = this.getYaw();
-            this.headYaw = this.bodyYaw;
+    public Player getControllingPassenger() {
+        if (getFirstPassenger() instanceof Player player) {
+            return player;
+        }
+        return null;
+    }
 
-            float strafe = rider.sidewaysSpeed * 0.5F;
-            float forward = rider.forwardSpeed;
+    @Override
+    public void travel(Vec3 movementInput) {
+        if (getControllingPassenger() != null) {
+            LivingEntity rider = getControllingPassenger();
+            this.setYRot(rider.getYRot());
+            this.setXRot(rider.getXRot() * 0.5F);
+            this.yBodyRot = this.getYRot();
+            this.yHeadRot = this.yBodyRot;
+
+            float strafe = rider.xxa * 0.5F;
+            float forward = rider.zza;
 
             if (forward <= 0.0F) {
                 forward *= 0.25F;
             }
 
-            this.setMovementSpeed((float) this.getAttributeValue(EntityAttributes.MOVEMENT_SPEED));
-            super.travel(new Vec3d(strafe, movementInput.y, forward));
+            // Rider jump control.
+            if (rider.isJumping() && this.onGround()) {
+                this.setDeltaMovement(this.getDeltaMovement().x, 0.42, this.getDeltaMovement().z);
+            }
+
+            AttributeInstance speedInstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
+            double speedAttr = speedInstance != null ? speedInstance.getValue() : 0.25;
+            if ("DASH".equals(getChickenType()) && dashSlowdown) {
+                speedAttr *= 0.5;
+            }
+            this.setSpeed((float) speedAttr);
+            super.travel(new Vec3(strafe, movementInput.y, forward));
         } else {
             super.travel(movementInput);
         }
     }
 
     public void performDash() {
-        if (dashCooldown <= 0 && "DASH".equals(chickenType)) {
-            Vec3d lookVec = this.getRotationVec(1.0F);
-            this.setVelocity(lookVec.x * 2.0, 0.5, lookVec.z * 2.0);
+        if (dashCooldown <= 0 && "DASH".equals(getChickenType())) {
+            Vec3 lookVec = this.getViewVector(1.0F);
+            this.setDeltaMovement(lookVec.x * 2.0, 0.5, lookVec.z * 2.0);
             dashCooldown = 100;
+            dashSlowdown = true;
         }
     }
 
     @Override
     public void tick() {
         super.tick();
-        
+
         if (dashCooldown > 0) {
             dashCooldown--;
         }
+        if (dashCooldown <= 0) {
+            dashSlowdown = false;
+        }
 
-        if ("SLOW_FALL".equals(chickenType)) {
-            if (!this.isOnGround() && this.getVelocity().y < 0) {
-                this.setVelocity(this.getVelocity().multiply(1.0, 0.6, 1.0));
+        if ("SLOW_FALL".equals(getChickenType())) {
+            if (!this.onGround() && this.getDeltaMovement().y < 0) {
+                Vec3 v = this.getDeltaMovement();
+                this.setDeltaMovement(v.x, v.y * 0.6, v.z);
             }
         }
 
-        if ("LUCK".equals(chickenType)) {
+        if ("LUCK".equals(getChickenType())) {
             luckEffectTimer++;
             if (luckEffectTimer >= 100) {
                 luckEffectTimer = 0;
-                for (PlayerEntity player : this.getEntityWorld().getPlayers()) {
-                    if (player.squaredDistanceTo(this) <= 64.0) {
-                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.LUCK, 200, 0, false, false));
+                for (Player player : this.level().players()) {
+                    if (player.distanceToSqr(this) <= 64.0) {
+                        player.addEffect(new MobEffectInstance(MobEffects.LUCK, 200, 0, false, false));
                     }
                 }
             }
         }
     }
 
-
     @Override
-    protected void fall(double heightDifference, boolean onGround, net.minecraft.block.BlockState state, net.minecraft.util.math.BlockPos pos) {
-        if ("SLOW_FALL".equals(chickenType)) {
+    protected void checkFallDamage(double heightDifference, boolean onGround, net.minecraft.world.level.block.state.BlockState state, net.minecraft.core.BlockPos pos) {
+        if ("SLOW_FALL".equals(getChickenType())) {
             this.fallDistance = 0.0F;
         } else {
-            super.fall(heightDifference, onGround, state, pos);
+            super.checkFallDamage(heightDifference, onGround, state, pos);
         }
     }
 }
