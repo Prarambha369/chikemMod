@@ -35,7 +35,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build remapped release JAR
-        run: ./gradlew --no-daemon clean remapJar
+        run: ./gradlew --no-daemon clean build
 
       - name: Prepare Release Metadata
         id: extract_version
